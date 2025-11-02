@@ -38,10 +38,12 @@ fun HomeUserScreen(navController: NavController) {
         drawerContent = {
             DrawerMenu(
                 navController = navController,
+                drawerState = drawerState,
                 closeDrawer = { scope.launch { drawerState.close() } }
             )
         }
-    ) {
+    )
+    {
         Scaffold(
             topBar = {
                 TopAppBar(

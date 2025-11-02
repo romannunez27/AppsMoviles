@@ -2,6 +2,7 @@ package com.example.pasteleriamilsaboresapp.ui.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -15,8 +16,9 @@ import com.example.pasteleriamilsaboresapp.ui.theme.*
 @Composable
 fun DrawerMenu(
     navController: NavController,
-    closeDrawer: () -> Unit
-) {
+    drawerState: DrawerState,
+    closeDrawer: () -> Unit)
+{
     Column(
         modifier = Modifier
             .fillMaxHeight()
