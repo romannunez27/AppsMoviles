@@ -1,4 +1,4 @@
-// ui/theme/Type.kt
+
 package com.example.pasteleriamilsaboresapp.ui.theme
 
 import androidx.compose.material3.Typography
@@ -36,3 +36,4 @@ val typography = Typography(
         fontSize = 14.sp
     )
 )
+
