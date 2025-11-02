@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.pasteleriamilsaboresapp.ui.login.LoginScreen
 import com.example.pasteleriamilsaboresapp.ui.nosotros.NosotrosScreen
+import com.example.pasteleriamilsaboresapp.ui.splash.SplashScreen
 import com.example.pasteleriamilsaboresapp.view.DrawerMenu
 import com.example.pasteleriamilsaboresapp.view.ProductoFormScreen
 import com.example.pasteleriamilsaboresapp.ui.theme.PasteleriaMilSaboresTheme
@@ -21,10 +22,12 @@ fun AppNav() {
     PasteleriaMilSaboresTheme {
         NavHost(
             navController = navController,
-            startDestination = "login"
+            startDestination = "splash" // 👈 ahora parte desde el splash
         ) {
+            composable("splash") {
+                SplashScreen(navController = navController)
+            }
 
-            // 🧁 Pantalla de Login
             composable("login") {
                 LoginScreen(navController = navController)
             }
