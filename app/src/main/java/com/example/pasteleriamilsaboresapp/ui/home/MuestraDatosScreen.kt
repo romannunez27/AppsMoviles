@@ -1,9 +1,6 @@
 package com.example.pasteleriamilsaboresapp.ui.home
 
-<<<<<<< HEAD
 
-=======
->>>>>>> dc1e4cb (avance header y footer)
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
