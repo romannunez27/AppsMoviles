@@ -66,7 +66,7 @@ fun LoginScreen(
 
                 // 🧁 Logo
                 Image(
-                    painter = painterResource(id = R.drawable.logo_pasteleria),
+                    painter = painterResource(id = R.drawable.logo_fndo_blanco),
                     contentDescription = "Logo Pastelería",
                     modifier = Modifier
                         .fillMaxWidth(0.7f)
