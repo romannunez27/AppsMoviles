@@ -4,6 +4,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
+
 // 🎀 Paleta de colores pastel clara
 private val PasteleriaColorScheme = lightColorScheme(
     primary = RosaPastel,
