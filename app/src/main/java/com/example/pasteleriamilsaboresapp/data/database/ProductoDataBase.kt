@@ -23,8 +23,8 @@ abstract class ProductoDataBase: RoomDatabase(){
         private var INSTANCE: ProductoDataBase?=null
 
         fun getDatabase(context: Context): ProductoDataBase{
-            return INSTANCE?: synchronized(lock = this){
-                val instance: Room.databaseBuilder(
+            return INSTANCE?: synchronized(this){
+                val instance = Room.databaseBuilder(
                     context.applicationContext,
                     ProductoDataBase::class.java,
                     "producto_database"
