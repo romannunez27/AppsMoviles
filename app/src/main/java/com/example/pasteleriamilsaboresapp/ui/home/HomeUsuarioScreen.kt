@@ -1,16 +1,13 @@
 package com.example.pasteleriamilsaboresapp.ui.home
 
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -19,58 +16,61 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.pasteleriamilsaboresapp.R
 import com.example.pasteleriamilsaboresapp.ui.theme.*
-import com.example.pasteleriamilsaboresapp.view.DrawerMenu
+import com.example.pasteleriamilsaboresapp.ui.view.DrawerMenu
 import kotlinx.coroutines.launch
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeUserScreen(
-    onNavigateTo: (String) -> Unit,
-    onCartClick: () -> Unit
-) {
+fun HomeUserScreen(navController: NavController) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
     ModalNavigationDrawer(
         drawerState = drawerState,
-        drawerContent = { DrawerMenu(onNavigateTo) }
+        drawerContent = {
+            DrawerMenu(
+                navController = navController,
+                closeDrawer = { scope.launch { drawerState.close() } }
+            )
+        }
     ) {
         Scaffold(
             topBar = {
                 TopAppBar(
                     title = {
                         Text(
-                            text = "Pastelería Mil Sabores",
-                            color = CafeSuave,
-                            style = MaterialTheme.typography.titleMedium
+                            "Pastelería Mil Sabores",
+                            fontFamily = Lato,       // si la definiste en tu Typography.kt
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = CafeSuave
                         )
                     },
                     navigationIcon = {
                         IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                            Icon(Icons.Default.Menu, contentDescription = "Menú", tint = CafeSuave)
-                        }
-                    },
-                    actions = {
-                        IconButton(onClick = onCartClick) {
-                            Icon(Icons.Default.ShoppingCart, contentDescription = "Carrito", tint = CafeSuave)
+                            Icon(Icons.Default.Menu, contentDescription = "Menú")
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(containerColor = RosaPastel)
                 )
-            },
-            containerColor = FondoCrema
+            }
         ) { padding ->
             LazyColumn(
                 modifier = Modifier
                     .padding(padding)
                     .fillMaxSize()
-                    .background(FondoCrema)
+                    .background(FondoCrema),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // 🩷 Descripción principal
+                // 🧁 Sección de bienvenida
                 item {
                     Column(
                         modifier = Modifier
@@ -85,25 +85,24 @@ fun HomeUserScreen(
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Nuestra pastelería es un lugar tradicional, donde cada postre refleja la dedicación y el amor por los sabores de antaño. Conservamos un aire nostálgico que transporta a nuestros clientes a recuerdos dulces de la infancia, pero con la frescura y calidad que esperan hoy en cada bocado.",
+                            text = "Nuestra pastelería es un lugar tradicional, donde cada postre refleja la dedicación y el amor por los sabores de antaño. Aquí encontrarás tortas, kuchenes y pasteles artesanales hechos con ingredientes seleccionados.",
                             color = MarronOscuro,
                             textAlign = TextAlign.Justify
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(
-                            onClick = { onNavigateTo("catalogo") },
+                            onClick = { navController.navigate("catalogo") },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = RosaPastel,
                                 contentColor = CafeSuave
-                            ),
-                            shape = MaterialTheme.shapes.medium
+                            )
                         ) {
-                            Text("Ver Productos 🍰")
+                            Text("Ver productos 🍰")
                         }
                     }
                 }
 
-                // 🍰 Carrusel de imágenes (simplificado)
+                // 🎂 Carrusel promocional
                 item {
                     LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -116,10 +115,10 @@ fun HomeUserScreen(
                             R.drawable.imagen_promocional_p,
                             R.drawable.blog
                         )
-                        items(images) { img ->
+                        items(images) { img: Int ->
                             Card(
                                 modifier = Modifier
-                                    .width(300.dp)
+                                    .width(280.dp)
                                     .height(180.dp),
                                 colors = CardDefaults.cardColors(containerColor = FondoCrema),
                                 elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
@@ -135,28 +134,45 @@ fun HomeUserScreen(
                     }
                 }
 
-                // 🎂 Productos destacados
+                // 🍰 Productos destacados
                 val productos = listOf(
-                    "Torta Especial de Cumpleaños" to "$55.000",
-                    "Torta Circular de Manjar" to "$42.000",
-                    "Torta Cuadrada de Chocolate" to "$45.000",
-                    "Torta Sin Azúcar de Naranja" to "$48.000"
+                    Triple("Torta Especial de Cumpleaños", "$55.000", R.drawable.te001),
+                    Triple("Torta Circular de Manjar", "$42.000", R.drawable.tt002),
+                    Triple("Torta Cuadrada de Chocolate", "$45.000", R.drawable.tc001),
+                    Triple("Torta Sin Azúcar de Naranja", "$48.000", R.drawable.psa001)
                 )
 
-                items(productos) { (nombre, precio) ->
+                items(productos) { (nombre, precio, imagen) ->
                     Card(
                         modifier = Modifier
                             .padding(12.dp)
-                            .fillMaxWidth()
+                            .fillMaxWidth(0.9f)
                             .border(2.dp, CafeSuave),
                         colors = CardDefaults.cardColors(containerColor = BeigeSuave)
                     ) {
-                        Column(Modifier.padding(16.dp)) {
-                            Text(nombre, color = CafeSuave, fontWeight = FontWeight.Bold)
-                            Spacer(Modifier.height(4.dp))
-                            Text("Deliciosa opción artesanal elaborada con amor y tradición.")
-                            Spacer(Modifier.height(8.dp))
-                            Text(precio, color = MarronOscuro, fontWeight = FontWeight.Bold)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Image(
+                                painter = painterResource(id = imagen),
+                                contentDescription = nombre,
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .border(1.dp, CafeSuave),
+                                contentScale = ContentScale.Crop
+                            )
+                            Spacer(Modifier.width(12.dp))
+                            Column {
+                                Text(nombre, color = CafeSuave, fontWeight = FontWeight.Bold)
+                                Spacer(Modifier.height(4.dp))
+                                Text(
+                                    "Deliciosa opción artesanal elaborada con amor y tradición.",
+                                    color = MarronOscuro
+                                )
+                                Spacer(Modifier.height(8.dp))
+                                Text(precio, color = MarronOscuro, fontWeight = FontWeight.Bold)
+                            }
                         }
                     }
                 }
@@ -164,14 +180,13 @@ fun HomeUserScreen(
         }
     }
 }
-@Preview(
-    showBackground = true)
+
+
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewHomeUserScreen() {
+    val navController = androidx.navigation.compose.rememberNavController()
     com.example.pasteleriamilsaboresapp.ui.theme.PasteleriaMilSaboresTheme {
-        HomeUserScreen(
-            onNavigateTo = {},
-            onCartClick = {}
-        )
+        HomeUserScreen(navController = navController)
     }
 }

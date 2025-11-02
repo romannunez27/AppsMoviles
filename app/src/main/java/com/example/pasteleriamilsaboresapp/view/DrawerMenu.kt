@@ -1,4 +1,4 @@
-package com.example.pasteleriamilsaboresapp.view
+package com.example.pasteleriamilsaboresapp.ui.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -9,29 +9,41 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.pasteleriamilsaboresapp.ui.theme.*
 
 @Composable
-fun DrawerMenu(onNavigateTo: (String) -> Unit) {
+fun DrawerMenu(
+    navController: NavController,
+    closeDrawer: () -> Unit
+) {
     Column(
-        Modifier
+        modifier = Modifier
             .fillMaxHeight()
             .background(RosaPastel)
             .padding(16.dp)
     ) {
-        Text("Menú", color = CafeSuave, fontWeight = FontWeight.Bold, fontSize = 20.sp)
-        Spacer(Modifier.height(12.dp))
+        Text(
+            "Menú principal",
+            color = CafeSuave,
+            fontWeight = FontWeight.Bold,
+            fontSize = 22.sp
+        )
+        Spacer(Modifier.height(16.dp))
 
         val opciones = listOf(
-            "Inicio" to "homeUser",
+            "Inicio" to "home",
             "Catálogo" to "catalogo",
             "Blogs" to "blogs",
             "Nosotros" to "nosotros"
         )
 
         opciones.forEach { (titulo, ruta) ->
-            TextButton(onClick = { onNavigateTo(ruta) }) {
-                Text(titulo, color = MarronOscuro, fontSize = 16.sp)
+            TextButton(onClick = {
+                navController.navigate(ruta)
+                closeDrawer()
+            }) {
+                Text(titulo, color = MarronOscuro, fontSize = 18.sp)
             }
         }
     }

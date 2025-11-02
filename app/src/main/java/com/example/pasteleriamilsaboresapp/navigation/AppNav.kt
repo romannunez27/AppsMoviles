@@ -9,7 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.pasteleriamilsaboresapp.ui.login.LoginScreen
 import com.example.pasteleriamilsaboresapp.ui.nosotros.NosotrosScreen
-import com.example.pasteleriamilsaboresapp.view.DrawerMenu
+import com.example.pasteleriamilsaboresapp.ui.view.DrawerMenu
 import com.example.pasteleriamilsaboresapp.view.ProductoFormScreen
 import com.example.pasteleriamilsaboresapp.ui.theme.PasteleriaMilSaboresTheme
 
@@ -34,15 +34,11 @@ fun AppNav() {
             }
 
             // 🧁 Pantalla principal con Drawer (pasando el usuario)
-            composable(
-                route = "DrawerMenu/{username}",
-                arguments = listOf(
-                    navArgument("username") { type = NavType.StringType }
-                )
-            ) { backStackEntry ->
-                val username = backStackEntry.arguments?.getString("username").orEmpty()
-                DrawerMenu(username = username, navController = navController)
+            // 🩷 Pantalla principal del usuario (usa Drawer internamente)
+            composable("home") {
+                com.example.pasteleriamilsaboresapp.ui.home.HomeUserScreen(navController = navController)
             }
+
 
             // 🧁 Pantalla de formulario de producto
             composable(
