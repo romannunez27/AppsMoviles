@@ -27,7 +27,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.pasteleriamilsaboresapp.ui.theme.CafeSuave
 
-
 @Composable
 
 fun CommonFooter() {
