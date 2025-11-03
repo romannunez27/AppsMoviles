@@ -1,4 +1,4 @@
-package com.example.pasteleriamilsaboresapp.ui.Blog
+package com.example.pasteleriamilsaboresapp.ui.blog
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController

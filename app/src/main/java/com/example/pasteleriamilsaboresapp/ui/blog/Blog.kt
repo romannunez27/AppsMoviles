@@ -1,4 +1,4 @@
-package com.example.pasteleriamilsaboresapp.ui.Blog
+package com.example.pasteleriamilsaboresapp.ui.blog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -21,6 +21,7 @@ import com.example.pasteleriamilsaboresapp.ui.components.CommonFooter
 import com.example.pasteleriamilsaboresapp.ui.components.CommonTopBar
 import com.example.pasteleriamilsaboresapp.ui.theme.BeigeSuave
 import com.example.pasteleriamilsaboresapp.ui.theme.FondoCrema
+import com.example.pasteleriamilsaboresapp.ui.theme.PasteleriaMilSaboresTheme
 import com.example.pasteleriamilsaboresapp.ui.theme.RosaIntenso
 
 
@@ -77,21 +78,18 @@ fun BlogPage() {
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = RosaIntenso
+        color = BeigeSuave
     ) {
         Scaffold(
             //topBar
-            topBar =
-                {
-                    CommonTopBar(
-                        //title = "Cntacto",
-                        onMenuClick = { /* abrir menú lateral */ },
-                        onCartClick = { /* ir al carrito */ },
-                        onProfileClick = { /* ir al perfil */ }
-
-                    )
-                }, // fin topBar
-
+            topBar = {
+                CommonTopBar(
+                    //title = "Cntacto",
+                    onMenuClick = { /* abrir menú lateral */ },
+                    onCartClick = { /* ir al carrito */ },
+                    onProfileClick = { /* ir al perfil */ }
+                )
+            },
             //Footer
             bottomBar = { CommonFooter() }
 
@@ -99,7 +97,7 @@ fun BlogPage() {
             Column(modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .background(BeigeSuave)
+                .background(FondoCrema)
             ) {
                 if (selectedPost == null) {
                     BlogScreen(onPostClick = { postId ->
@@ -115,14 +113,13 @@ fun BlogPage() {
             }
         }
     }
-
 }
 
 
 @Preview(showBackground = true)
 @Composable
-fun BlogPageScreen() {
-    MaterialTheme {
+fun BlogPageScreenPreview() {
+    PasteleriaMilSaboresTheme {
         BlogPage()
     }
 }
