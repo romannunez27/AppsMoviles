@@ -62,7 +62,7 @@ fun CommonTopBar(
                     Icon(
                         imageVector = if (showBackButton) Icons.Default.ArrowBack else Icons.Default.Menu,
                         contentDescription = if (showBackButton) "Volver" else "Menú",
-                        tint = FondoCrema
+                        tint = CafeSuave
                     )
                 }
                              },
@@ -71,7 +71,7 @@ fun CommonTopBar(
                     Icon(
                         imageVector = Icons.Default.ShoppingCart,
                         contentDescription = "Carrito",
-                        tint = FondoCrema
+                        tint = CafeSuave
                     )
                 }
 
@@ -79,7 +79,7 @@ fun CommonTopBar(
                     Icon(
                         imageVector = Icons.Default.AccountCircle,
                         contentDescription = "Perfil",
-                        tint = FondoCrema
+                        tint = CafeSuave
                     )
                 }
                       },
