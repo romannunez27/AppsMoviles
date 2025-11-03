@@ -12,6 +12,7 @@ import com.example.pasteleriamilsaboresapp.ui.login.LoginScreen
 import com.example.pasteleriamilsaboresapp.ui.nosotros.NosotrosScreen
 import com.example.pasteleriamilsaboresapp.ui.splash.SplashScreen
 import com.example.pasteleriamilsaboresapp.ui.catalogo.CatalogoScreen
+import com.example.pasteleriamilsaboresapp.ui.contacto.ContactScreen
 import com.example.pasteleriamilsaboresapp.ui.home.HomeUserScreen
 import com.example.pasteleriamilsaboresapp.view.ProductoFormScreen
 import com.example.pasteleriamilsaboresapp.ui.theme.PasteleriaMilSaboresTheme
@@ -48,6 +49,11 @@ fun AppNav() {
             //Blog
             composable("blogs"){
                 BlogPage(navController = navController)
+            }
+
+            //contacto
+            composable("contacto"){
+                ContactScreen(navController = navController)
             }
 
             // ℹ️ Nosotros
