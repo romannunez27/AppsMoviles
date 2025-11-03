@@ -26,6 +26,8 @@ import kotlinx.coroutines.launch
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.ui.unit.sp
+import com.example.pasteleriamilsaboresapp.ui.components.CommonFooter
+import com.example.pasteleriamilsaboresapp.ui.components.CommonTopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,28 +44,16 @@ fun HomeUserScreen(navController: NavController) {
                 closeDrawer = { scope.launch { drawerState.close() } }
             )
         }
-    )
-    {
+    ) {
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            "Pastelería Mil Sabores",
-                            fontFamily = Lato,       // si la definiste en tu Typography.kt
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = CafeSuave
-                        )
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                            Icon(Icons.Default.Menu, contentDescription = "Menú")
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(containerColor = RosaPastel)
+                CommonTopBar(
+                    onMenuClick = { scope.launch { drawerState.open() } },
+                    onCartClick = { navController.navigate("carrito") },
+                    onProfileClick = { navController.navigate("perfil") }
                 )
-            }
+            },
+            containerColor = FondoCrema
         ) { padding ->
             LazyColumn(
                 modifier = Modifier
@@ -87,7 +77,7 @@ fun HomeUserScreen(navController: NavController) {
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Nuestra pastelería es un lugar tradicional, donde cada postre refleja la dedicación y el amor por los sabores de antaño. Aquí encontrarás tortas, kuchenes y pasteles artesanales hechos con ingredientes seleccionados.",
+                            text = "Nuestra pastelería es un lugar tradicional, donde cada postre refleja la dedicación y el amor por los sabores de antaño...",
                             color = MarronOscuro,
                             textAlign = TextAlign.Justify
                         )
@@ -178,11 +168,20 @@ fun HomeUserScreen(navController: NavController) {
                         }
                     }
                 }
+
+                // 🍮 Footer scrolleable
+                item {
+                    Spacer(modifier = Modifier.height(32.dp))
+                    CommonFooter(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(FondoCrema)
+                    )
+                }
             }
         }
     }
 }
-
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
