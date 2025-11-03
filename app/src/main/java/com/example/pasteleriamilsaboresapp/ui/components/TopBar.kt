@@ -1,75 +1,97 @@
 package com.example.pasteleriamilsaboresapp.ui.components
 
-import android.media.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import com.example.pasteleriamilsaboresapp.R
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.example.pasteleriamilsaboresapp.ui.theme.RosaIntenso
+import com.example.pasteleriamilsaboresapp.R
+import com.example.pasteleriamilsaboresapp.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommonTopBar( //estas "funciones" son para que se hagan "algo" cuando las aprieten
+fun CommonTopBar(
+    onMenuClick: () -> Unit = {},
+    onCartClick: () -> Unit = {},
+    onProfileClick: () -> Unit = {},
+    showBackButton: Boolean = false
+) {
+    // 🌈 Animación de color suave para mantener el dinamismo visual
+    val topBarColor by animateColorAsState(targetValue = RosaIntenso)
 
-    onMenuClick: () -> Unit = {}, // Acción al hacer clic en el ícono de menú
-    onCartClick: () -> Unit = {}, // Acción al hacer clic en el ícono de carrito
-    onProfileClick: () -> Unit = {}
-)
-
-{
-    TopAppBar(
-        title = {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            )
-            {
-                //logo
-                Image(
-                    painter = painterResource(id = R.drawable.logo_sin_fondo ),
-                    contentDescription = "Logo",
-                    modifier = Modifier.size(65.dp)
-                )
-            } // fin row
-        }, //title
-
-        navigationIcon = {
-            IconButton(onClick = onMenuClick) {
-                Icon(Icons.Default.Menu, contentDescription = "Menú")
-            }
-        }, //navigation
-
-        actions = {
-            IconButton(onClick = onCartClick) {
-                Icon(Icons.Default.ShoppingCart, contentDescription = "Carrito")
-            }
-            IconButton(onClick = onProfileClick) {
-                Icon(Icons.Default.AccountCircle, contentDescription = "Perfil")
-            }
-        }, //actions
-
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = RosaIntenso,
-            titleContentColor = Color.White,
-            navigationIconContentColor = Color.White,
-            actionIconContentColor = Color.White
-
-        )
+    // ✨ Gradiente pastel moderno
+    val gradientBrush = Brush.horizontalGradient(
+        colors = listOf(RosaIntenso, RosaPastel, BeigeSuave)
     )
+
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(elevation = 8.dp, spotColor = RosaPastel) // sombra sutil
+            .background(brush = gradientBrush),
+        color = Color.Transparent
+    ) {
+        CenterAlignedTopAppBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 68.dp, max = 100.dp)
+                .background(brush = gradientBrush)
+                .windowInsetsPadding(WindowInsets.safeDrawing),
+            title = {
+                Image(
+                    painter = painterResource(id = R.drawable.logo_sin_fondo),
+                    contentDescription = "Logo Pastelería Mil Sabores",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .heightIn(min = 45.dp, max = 70.dp)
+                        .widthIn(min = 110.dp, max = 170.dp)
+                )
+            },
+            navigationIcon = {
+                IconButton(onClick = onMenuClick) {
+                    Icon(
+                        imageVector = if (showBackButton) Icons.Default.ArrowBack else Icons.Default.Menu,
+                        contentDescription = if (showBackButton) "Volver" else "Menú",
+                        tint = FondoCrema
+                    )
+                }
+            },
+            actions = {
+                IconButton(onClick = onCartClick) {
+                    Icon(
+                        imageVector = Icons.Default.ShoppingCart,
+                        contentDescription = "Carrito",
+                        tint = FondoCrema
+                    )
+                }
+                IconButton(onClick = onProfileClick) {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "Perfil",
+                        tint = FondoCrema
+                    )
+                }
+            },
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color.Transparent,
+                titleContentColor = FondoCrema,
+                navigationIconContentColor = FondoCrema,
+                actionIconContentColor = FondoCrema
+            )
+        )
+    }
 }

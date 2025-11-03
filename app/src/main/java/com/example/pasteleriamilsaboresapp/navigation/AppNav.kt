@@ -19,7 +19,6 @@ import com.example.pasteleriamilsaboresapp.ui.theme.PasteleriaMilSaboresTheme
 fun AppNav() {
     val navController = rememberNavController()
 
-    // 🍰 Envolvemos todo con tu tema pastel
     PasteleriaMilSaboresTheme {
         NavHost(
             navController = navController,
@@ -34,7 +33,7 @@ fun AppNav() {
             }
 
             composable("nosotros") {
-                NosotrosScreen()
+                NosotrosScreen(navController = navController)
             }
 
             // 🧁 Pantalla principal con Drawer (pasando el usuario)
