@@ -15,6 +15,8 @@ import com.example.pasteleriamilsaboresapp.ui.catalogo.CatalogoScreen
 import com.example.pasteleriamilsaboresapp.ui.home.HomeUserScreen
 import com.example.pasteleriamilsaboresapp.view.ProductoFormScreen
 import com.example.pasteleriamilsaboresapp.ui.theme.PasteleriaMilSaboresTheme
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 @Composable
 fun AppNav() {
@@ -46,31 +48,27 @@ fun AppNav() {
             }
 
             //Blog
-            composable("blogs"){
-                BlogPage(navController = navController)
-            }
-
-            // ℹ️ Nosotros
-            composable("nosotros") {
-                NosotrosScreen(navController = navController)
-            }
-
-            // 🧁 Formulario de producto (detalle)
             composable(
                 route = "productoForm/{nombre}/{precio}",
                 arguments = listOf(
                     navArgument("nombre") { type = NavType.StringType },
-                    navArgument("precio") { type = NavType.StringType }
+                    navArgument("precio") { type = NavType.StringType },
+
                 )
             ) { backStackEntry ->
                 val nombre = Uri.decode(backStackEntry.arguments?.getString("nombre") ?: "")
                 val precio = backStackEntry.arguments?.getString("precio") ?: ""
+
+
                 ProductoFormScreen(
                     navController = navController,
                     nombre = nombre,
-                    precio = precio
+                    precio = precio,
+
                 )
             }
+
+
         }
     }
 }

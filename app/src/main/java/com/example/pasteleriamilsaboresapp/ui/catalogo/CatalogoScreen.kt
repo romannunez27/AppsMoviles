@@ -30,6 +30,8 @@ import kotlinx.coroutines.launch
 import com.example.pasteleriamilsaboresapp.ui.theme.CafeSuave
 import com.example.pasteleriamilsaboresapp.ui.theme.MarronOscuro
 import com.example.pasteleriamilsaboresapp.ui.theme.RosaPastel
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 data class ProductoCatalogo(
     val codigo: String,
@@ -148,6 +150,8 @@ fun CatalogoScreen(navController: NavController) {
                             ) {
                                 Text("Ver detalles", color = MarronOscuro)
                             }
+
+
                         }
                     }
                 }

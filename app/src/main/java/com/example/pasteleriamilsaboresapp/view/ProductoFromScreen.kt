@@ -1,6 +1,5 @@
 package com.example.pasteleriamilsaboresapp.view
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -9,8 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -18,29 +16,37 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
-import coil.compose.rememberAsyncImagePainter
 import com.example.pasteleriamilsaboresapp.data.model.Producto
+import com.example.pasteleriamilsaboresapp.data.database.ProductoDataBase
+import com.example.pasteleriamilsaboresapp.data.repository.ProductRepository
 import com.example.pasteleriamilsaboresapp.ui.theme.PasteleriaMilSaboresTheme
 import com.example.pasteleriamilsaboresapp.viewmodel.ProductoViewModel
+import com.example.pasteleriamilsaboresapp.viewmodel.ProductoViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductoFormScreen(
     navController: NavController,
     nombre: String,
-    precio: String,
-    productoViewModel: ProductoViewModel = viewModel()
+    precio: String
 ) {
-    // Estados locales del formulario
+    // ✅ Inicialización segura del ViewModel con su repositorio y base de datos
+    val context = LocalContext.current
+    val database = ProductoDataBase.getDatabase(context)
+    val repository = ProductRepository(database.productoDao())
+    val productoViewModel: ProductoViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
+        factory = ProductoViewModelFactory(repository)
+    )
+
+    // Estados del formulario
     var cantidad by remember { mutableStateOf(TextFieldValue("")) }
     var direccion by remember { mutableStateOf(TextFieldValue("")) }
     var mensajeDedicatoria by remember { mutableStateOf(false) }
     var agregarVela by remember { mutableStateOf(false) }
     var mensajeExito by remember { mutableStateOf(false) }
 
-    // Fondo principal del formulario
+    // Layout principal
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -51,20 +57,7 @@ fun ProductoFormScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // 🖼️ Imagen del producto
-            Image(
-                painter = rememberAsyncImagePainter(model = "file:///android_asset/${nombre.replace(" ", "_").lowercase()}.jpg"),
-                contentDescription = "Imagen del producto",
-                modifier = Modifier
-                    .size(220.dp)
-                    .padding(8.dp)
-                    .clip(RoundedCornerShape(16.dp)),
-                contentScale = ContentScale.Crop
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // 🧁 Título del producto
+            // 🧁 Nombre del producto
             Text(
                 text = nombre,
                 style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
@@ -81,13 +74,10 @@ fun ProductoFormScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // 🔢 Campo cantidad (solo números)
+            // 🔢 Campo cantidad
             OutlinedTextField(
                 value = cantidad,
-                onValueChange = {
-                    // Filtramos para permitir solo dígitos
-                    if (it.text.all { char -> char.isDigit() }) cantidad = it
-                },
+                onValueChange = { if (it.text.all { c -> c.isDigit() }) cantidad = it },
                 label = { Text("Cantidad") },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -115,7 +105,7 @@ fun ProductoFormScreen(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // 💌 Switch: mensaje dedicatoria
+            // 💌 Switch: dedicatoria
             Row(
                 modifier = Modifier.fillMaxWidth(0.9f),
                 verticalAlignment = Alignment.CenterVertically,
@@ -133,7 +123,7 @@ fun ProductoFormScreen(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // 🕯️ Switch: agregar vela
+            // 🕯️ Switch: vela
             Row(
                 modifier = Modifier.fillMaxWidth(0.9f),
                 verticalAlignment = Alignment.CenterVertically,
@@ -149,10 +139,9 @@ fun ProductoFormScreen(
                 )
             }
 
-
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Botón de compra
+            // 🛒 Botón de compra
             Button(
                 onClick = {
                     if (cantidad.text.isNotBlank() && direccion.text.isNotBlank()) {
@@ -176,7 +165,7 @@ fun ProductoFormScreen(
                 Text("Comprar")
             }
 
-            // Mensaje de confirmación
+            // ✅ Mensaje de éxito
             if (mensajeExito) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
@@ -189,41 +178,23 @@ fun ProductoFormScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Volver al catálogo
+            // 🔙 Volver al catálogo
             TextButton(onClick = { navController.popBackStack() }) {
                 Text("Volver al catálogo", color = MaterialTheme.colorScheme.onSurface)
             }
         }
     }
 }
+
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewProductoFormScreen() {
-    // ✅ Creamos un repositorio real con un DAO simulado
-    val fakeRepository = com.example.pasteleriamilsaboresapp.data.repository.ProductRepository(
-        productoDao = object : com.example.pasteleriamilsaboresapp.data.dao.ProductoDao {
-            override suspend fun insertarProducto(producto: com.example.pasteleriamilsaboresapp.data.model.Producto) {
-                // No hace nada, solo simula
-            }
-
-            override fun obtenerProductos(): kotlinx.coroutines.flow.Flow<List<com.example.pasteleriamilsaboresapp.data.model.Producto>> {
-                // Devuelve una lista vacía simulada
-                return kotlinx.coroutines.flow.flowOf(emptyList())
-            }
-        }
-    )
-
-    val fakeViewModel = remember {
-        com.example.pasteleriamilsaboresapp.viewmodel.ProductoViewModel(repository = fakeRepository)
-    }
-
-    com.example.pasteleriamilsaboresapp.ui.theme.PasteleriaMilSaboresTheme {
+    PasteleriaMilSaboresTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            com.example.pasteleriamilsaboresapp.view.ProductoFormScreen(
+            ProductoFormScreen(
                 navController = rememberNavController(),
                 nombre = "Torta Cuadrada de Chocolate",
-                precio = "45000",
-                productoViewModel = fakeViewModel
+                precio = "45000"
             )
         }
     }
