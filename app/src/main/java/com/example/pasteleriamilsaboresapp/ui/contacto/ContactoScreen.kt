@@ -35,6 +35,7 @@ fun ContactScreen(navController: NavController) {
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
+
     Scaffold(
         topBar = {
             CommonTopBar(
