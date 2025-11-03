@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.pasteleriamilsaboresapp.ui.theme.RosaIntenso
+import com.example.pasteleriamilsaboresapp.ui.theme.RosaPastel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,7 +66,7 @@ fun CommonTopBar( //estas "funciones" son para que se hagan "algo" cuando las ap
         }, //actions
 
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = RosaIntenso,
+            containerColor = Color(0xFFFCBEC9),
             titleContentColor = Color.White,
             navigationIconContentColor = Color.White,
             actionIconContentColor = Color.White

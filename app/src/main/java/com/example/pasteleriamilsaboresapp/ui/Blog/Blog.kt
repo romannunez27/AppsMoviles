@@ -2,6 +2,7 @@ package com.example.pasteleriamilsaboresapp.ui.Blog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,11 +17,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.pasteleriamilsaboresapp.R
 import com.example.pasteleriamilsaboresapp.ui.components.CommonFooter
 import com.example.pasteleriamilsaboresapp.ui.components.CommonTopBar
 import com.example.pasteleriamilsaboresapp.ui.theme.BeigeSuave
-import com.example.pasteleriamilsaboresapp.ui.theme.FondoCrema
 import com.example.pasteleriamilsaboresapp.ui.theme.RosaIntenso
 
 
@@ -72,7 +73,6 @@ fun BlogScreen(onPostClick: (Int) -> Unit) {
 
 @Composable
 fun BlogPage() {
-
     var selectedPost by remember { mutableStateOf<BlogPost?>(null) }
 
     Surface(
@@ -80,42 +80,44 @@ fun BlogPage() {
         color = RosaIntenso
     ) {
         Scaffold(
-            //topBar
-            topBar =
-                {
-                    CommonTopBar(
-                        //title = "Cntacto",
-                        onMenuClick = { /* abrir menú lateral */ },
-                        onCartClick = { /* ir al carrito */ },
-                        onProfileClick = { /* ir al perfil */ }
-
-                    )
-                }, // fin topBar
-
-            //Footer
-            bottomBar = { CommonFooter() }
+            topBar = {
+                CommonTopBar(
+                    onMenuClick = { },
+                    onCartClick = { },
+                    onProfileClick = { }
+                )
+            },
 
         ) { innerPadding ->
-            Column(modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .background(BeigeSuave)
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .background(BeigeSuave),
+                contentPadding = PaddingValues(0.dp) //margen
             ) {
                 if (selectedPost == null) {
-                    BlogScreen(onPostClick = { postId ->
-                        selectedPost = samplePosts.find { it.id == postId }
-                    })
+                    items(samplePosts) { post ->
+                        BlogCard(post = post, onClick = {
+                            selectedPost = samplePosts.find { it.id == post.id }
+                        })
+                    }
                 } else {
-                    DetalleBlog(
-                        post = selectedPost!!,
-                        onBack = { selectedPost = null }
-                    )
+                    item {
+                        DetalleBlog(
+                            post = selectedPost!!,
+                            onBack = { selectedPost = null }
+                        )
+                    }
                 }
 
+                // Footer
+                item {
+                    CommonFooter()
+                }
             }
         }
     }
-
 }
 
 

@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.pasteleriamilsaboresapp.ui.theme.CafeSuave
+import com.example.pasteleriamilsaboresapp.ui.theme.MarronOscuro
 
 @Composable
 
@@ -33,7 +34,7 @@ fun CommonFooter() {
     Surface(
 
         //colores
-        color = CafeSuave,
+        color = Color(0xFFFBF1E6),
         contentColor = Color.White
 
     ) {
@@ -57,15 +58,15 @@ fun CommonFooter() {
                 Text(
                     text = "Pastelería Mil Sabores",
                     style = MaterialTheme.typography.titleLarge,
-                    color = Color.White
+                    color = MarronOscuro
                 )
 
             }
 
             //webpay
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("Medio de pago", style = MaterialTheme.typography.bodyMedium)
-                Spacer(modifier = Modifier.height(15.dp))
+                Text("Medio de pago", style = MaterialTheme.typography.bodyLarge, color = MarronOscuro)
+                Spacer(modifier = Modifier.height(5.dp))
                 Image(
                     painter = painterResource(id = R.drawable.webpay),
                     contentDescription = "Logo Webpay",
@@ -75,12 +76,12 @@ fun CommonFooter() {
 
             //redes sociales con texto
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("Síguenos", style = MaterialTheme.typography.bodyMedium)
-                Spacer(modifier = Modifier.height(15.dp))
+                Text("Síguenos", style = MaterialTheme.typography.bodyLarge, color = MarronOscuro)
+                Spacer(modifier = Modifier.height(5.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Icon(Icons.Default.Facebook, contentDescription = "Facebook")
-                    Icon(Icons.Default.Share, contentDescription = "Instagram")
-                    Icon(Icons.Default.Public, contentDescription = "Twitter")
+                    Icon(Icons.Default.Facebook, contentDescription = "Facebook", tint = MarronOscuro)
+                    Icon(Icons.Default.Share, contentDescription = "Instagram", tint = MarronOscuro)
+                    Icon(Icons.Default.Public, contentDescription = "Twitter", tint = MarronOscuro)
 
                 }
             }

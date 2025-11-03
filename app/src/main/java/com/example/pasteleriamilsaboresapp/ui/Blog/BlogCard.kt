@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.pasteleriamilsaboresapp.ui.theme.CafeSuave
+import com.example.pasteleriamilsaboresapp.ui.theme.RosaPastel
 
 
 @Composable
@@ -40,9 +41,9 @@ fun BlogCard(post: BlogPost, onClick: () -> Unit) {
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(8.dp)
-                        .background(Color(0xFFBA68C8), shape = RoundedCornerShape(8.dp))
+                        .background(Color(0xFFF379A3), shape = RoundedCornerShape(8.dp))
                         .padding(horizontal = 8.dp, vertical = 4.dp),
-                    color = Color.White,
+                    color = Color(0xFFFAD8E3),
                     style = MaterialTheme.typography.labelMedium
                 )
             }
