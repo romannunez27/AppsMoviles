@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import com.example.pasteleriamilsaboresapp.R
 import com.example.pasteleriamilsaboresapp.ui.theme.*
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommonTopBar(
