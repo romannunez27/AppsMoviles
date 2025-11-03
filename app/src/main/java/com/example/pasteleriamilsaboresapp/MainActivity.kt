@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.Surface
 import androidx.compose.material3.MaterialTheme
-import androidx.navigation.compose.rememberNavController
 import com.example.pasteleriamilsaboresapp.navigation.AppNav
 import com.example.pasteleriamilsaboresapp.ui.theme.PasteleriaMilSaboresTheme
 
@@ -15,8 +14,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             PasteleriaMilSaboresTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
-                    val navController = rememberNavController()
-                    AppNav()
+                    AppNav() // ✅ AppNav ya maneja su propio navController
                 }
             }
         }

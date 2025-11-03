@@ -4,14 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pasteleriamilsaboresapp.data.model.Compra
 import com.example.pasteleriamilsaboresapp.data.model.Producto
-import com.example.pasteleriamilsaboresapp.data.repository.ProductoRepository
+import com.example.pasteleriamilsaboresapp.data.repository.ProductRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class ProductoViewModel(
-    private val repository: ProductoRepository = ProductoRepository()
+    private val repository: ProductRepository = ProductRepository()
 ) : ViewModel() {
 
     private val _productos = MutableStateFlow<List<Producto>>(emptyList())
