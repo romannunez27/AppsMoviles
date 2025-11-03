@@ -25,6 +25,8 @@ import com.example.pasteleriamilsaboresapp.R
 import com.example.pasteleriamilsaboresapp.ui.theme.PasteleriaMilSaboresTheme
 import com.example.pasteleriamilsaboresapp.ui.view.DrawerMenu
 import kotlinx.coroutines.launch
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import com.example.pasteleriamilsaboresapp.ui.theme.CafeSuave
 import com.example.pasteleriamilsaboresapp.ui.theme.MarronOscuro
 import com.example.pasteleriamilsaboresapp.ui.theme.RosaPastel
@@ -150,7 +152,8 @@ fun CatalogoScreen(navController: NavController) {
                             // Botón "Ver detalles" con borde visible
                             OutlinedButton(
                                 onClick = {
-                                    navController.navigate("productoForm/${producto.nombre}/${producto.precio}")
+                                    val nombreCodificado = URLEncoder.encode(producto.nombre, StandardCharsets.UTF_8.toString())
+                                    navController.navigate("productoForm/$nombreCodificado/${producto.precio}")
                                 },
                                 border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary),
                                 colors = ButtonDefaults.outlinedButtonColors(
