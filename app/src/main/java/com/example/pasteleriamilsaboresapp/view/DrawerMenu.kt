@@ -74,8 +74,9 @@ fun DrawerMenu(
             val opciones = listOf(
                 Triple("Inicio", Icons.Default.Home, "home"),
                 Triple("Catálogo", Icons.Default.ShoppingBag, "catalogo"),
-                Triple("Blogs", Icons.Default.Article, "blogs"),
-                Triple("Nosotros", Icons.Default.Info, "nosotros")
+                Triple("Blog", Icons.Default.Article, "blogs"),
+                Triple("Nosotros", Icons.Default.Info, "nosotros"),
+                Triple("Contáctanos", Icons.Default.Email, "contacto")
             )
 
             opciones.forEach { (titulo, icono, ruta) ->
