@@ -1,4 +1,4 @@
-package com.example.pasteleriamilsaboresapp.ui.Blog
+package com.example.pasteleriamilsaboresapp.ui.blog
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,18 +12,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.pasteleriamilsaboresapp.ui.theme.CafeSuave
-import com.example.pasteleriamilsaboresapp.ui.theme.RosaPastel
-
 
 @Composable
 fun BlogCard(post: BlogPost, onClick: () -> Unit) {
-    Card( //forma de la tarjeta
+    Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(16.dp), // 💡 más redondeada
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column {
@@ -41,7 +38,7 @@ fun BlogCard(post: BlogPost, onClick: () -> Unit) {
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(8.dp)
-                        .background(Color(0xFFF379A3), shape = RoundedCornerShape(8.dp))
+                        .background(Color(0xFFE38CA8), shape = RoundedCornerShape(8.dp))
                         .padding(horizontal = 8.dp, vertical = 4.dp),
                     color = Color(0xFFFAD8E3),
                     style = MaterialTheme.typography.labelMedium
@@ -71,14 +68,5 @@ fun BlogCard(post: BlogPost, onClick: () -> Unit) {
                 Text("Ver post >>")
             }
         }
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun BlogPageScreenw() {
-    MaterialTheme {
-        BlogPage()
     }
 }

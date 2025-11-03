@@ -1,9 +1,11 @@
-package com.example.pasteleriamilsaboresapp.ui.Blog
+package com.example.pasteleriamilsaboresapp.ui.blog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,6 +20,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.pasteleriamilsaboresapp.R
 import com.example.pasteleriamilsaboresapp.ui.components.CommonFooter
 import com.example.pasteleriamilsaboresapp.ui.components.CommonTopBar
@@ -62,59 +66,61 @@ val samplePosts = listOf(
 //Pantalla principal del blog
 @Composable
 fun BlogScreen(onPostClick: (Int) -> Unit) {
-    LazyColumn {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BeigeSuave)
+    ) {
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
         items(samplePosts) { post ->
-            BlogCard(post = post, onClick = {
-                onPostClick(post.id)
-            })
+            Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                BlogCard(post = post, onClick = { onPostClick(post.id) })
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
+
+        item {
+            CommonFooter(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(BeigeSuave)
+            )
         }
     }
 }
 
 @Composable
-fun BlogPage() {
-    var selectedPost by remember { mutableStateOf<BlogPost?>(null) }
-
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = RosaIntenso
-    ) {
-        Scaffold(
-            topBar = {
-                CommonTopBar(
-                    onMenuClick = { },
-                    onCartClick = { },
-                    onProfileClick = { }
-                )
-            },
-
-        ) { innerPadding ->
-            LazyColumn(
+fun BlogPage(navController: NavHostController) {
+    Scaffold(
+        topBar = {
+            CommonTopBar(
+                onMenuClick = { /* abrir menú lateral */ },
+                onCartClick = { /* ir al carrito */ },
+                onProfileClick = { /* ir al perfil */ }
+            )
+        }
+    ) { innerPadding ->
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            color = RosaIntenso
+        ) {
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
-                    .background(BeigeSuave),
-                contentPadding = PaddingValues(0.dp) //margen
+                    .background(BeigeSuave)
             ) {
-                if (selectedPost == null) {
-                    items(samplePosts) { post ->
-                        BlogCard(post = post, onClick = {
-                            selectedPost = samplePosts.find { it.id == post.id }
-                        })
-                    }
-                } else {
-                    item {
-                        DetalleBlog(
-                            post = selectedPost!!,
-                            onBack = { selectedPost = null }
-                        )
-                    }
-                }
+                BlogNavHost(navController = navController)
 
-                // Footer
-                item {
-                    CommonFooter()
-                }
+                CommonFooter(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(BeigeSuave)
+                )
             }
         }
     }
@@ -124,8 +130,9 @@ fun BlogPage() {
 @Preview(showBackground = true)
 @Composable
 fun BlogPageScreen() {
+    val navController = rememberNavController()
     MaterialTheme {
-        BlogPage()
+        BlogPage(navController = navController)
     }
 }
 

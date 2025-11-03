@@ -30,7 +30,7 @@ import com.example.pasteleriamilsaboresapp.ui.theme.MarronOscuro
 
 @Composable
 
-fun CommonFooter() {
+fun CommonFooter(modifier: Modifier = Modifier) {
     Surface(
 
         //colores

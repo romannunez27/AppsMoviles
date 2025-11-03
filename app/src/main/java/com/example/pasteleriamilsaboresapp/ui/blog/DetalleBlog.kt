@@ -1,9 +1,8 @@
-package com.example.pasteleriamilsaboresapp.ui.Blog
+package com.example.pasteleriamilsaboresapp.ui.blog
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,11 +25,7 @@ fun DetalleBlog(post: BlogPost, onBack: () -> Unit) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(
-            text = post.titulo,
-            style = MaterialTheme.typography.titleLarge
-        )
-
+        Text(text = post.titulo, style = MaterialTheme.typography.titleLarge)
         Text(
             text = post.categoria,
             style = MaterialTheme.typography.labelMedium,
@@ -39,11 +34,7 @@ fun DetalleBlog(post: BlogPost, onBack: () -> Unit) {
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        Text(
-            text = post.content,
-            style = MaterialTheme.typography.bodyMedium
-        )
-
+        Text(text = post.content, style = MaterialTheme.typography.bodyMedium)
         Spacer(modifier = Modifier.height(12.dp))
 
         Button(
@@ -51,11 +42,9 @@ fun DetalleBlog(post: BlogPost, onBack: () -> Unit) {
             colors = ButtonDefaults.buttonColors(
                 containerColor = CafeSuave,
                 contentColor = Color.White
-        )
-
+            )
         ) {
             Text("Volver al blog")
         }
     }
 }
-

@@ -64,6 +64,7 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.3.0")
     // Dependencias Room
     implementation("androidx.room:room-runtime:2.6.1")
+    implementation(libs.androidx.material3)
     kapt("androidx.room:room-compiler:2.6.1")          // Misma versión
     implementation("androidx.room:room-ktx:2.6.1")     // Misma versión
 

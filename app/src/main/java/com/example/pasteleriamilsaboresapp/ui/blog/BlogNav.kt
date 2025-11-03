@@ -1,5 +1,6 @@
-package com.example.pasteleriamilsaboresapp.ui.Blog
+package com.example.pasteleriamilsaboresapp.ui.blog
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -17,11 +18,10 @@ fun BlogNavHost(navController: NavHostController) {
         composable("detail/{postId}") { backStackEntry ->
             val postId = backStackEntry.arguments?.getString("postId")?.toIntOrNull()
             val post = samplePosts.find { it.id == postId }
-            post?.let {
-                DetalleBlog(
-                    post = it,
-                    onBack = { navController.popBackStack() }
-                )
+            if (post != null) {
+                DetalleBlog(post = post, onBack = { navController.popBackStack() })
+            } else {
+                Text("No se encontró el artículo")
             }
         }
     }
