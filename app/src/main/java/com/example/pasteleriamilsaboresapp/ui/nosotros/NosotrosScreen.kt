@@ -15,6 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.pasteleriamilsaboresapp.R
 import com.example.pasteleriamilsaboresapp.ui.components.CommonTopBar
 import com.example.pasteleriamilsaboresapp.ui.theme.*
@@ -148,8 +149,10 @@ fun NosotrosScreen(navController: NavController) {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun NosotrosScreenPreview() {
-    Text("Vista Nosotros (Preview)")
+    PasteleriaMilSaboresTheme {
+        NosotrosScreen(navController = rememberNavController())
+    }
 }

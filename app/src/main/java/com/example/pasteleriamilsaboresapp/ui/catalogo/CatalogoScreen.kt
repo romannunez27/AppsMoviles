@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.pasteleriamilsaboresapp.R
+import com.example.pasteleriamilsaboresapp.ui.components.CommonFooter
+import com.example.pasteleriamilsaboresapp.ui.components.CommonTopBar
 import com.example.pasteleriamilsaboresapp.ui.theme.PasteleriaMilSaboresTheme
 import com.example.pasteleriamilsaboresapp.ui.view.DrawerMenu
 import kotlinx.coroutines.launch
@@ -75,23 +77,10 @@ fun CatalogoScreen(navController: NavController) {
     {
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            "Catálogo de Productos",
-                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                            color = MarronOscuro
-                        )
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        titleContentColor = MaterialTheme.colorScheme.onPrimary
-                    ),
-                    navigationIcon = {
-                        IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                            Icon(Icons.Default.Menu, contentDescription = "Menú")
-                        }
-                    }
+                CommonTopBar(
+                    onMenuClick = { scope.launch { drawerState.open() } },
+                    onCartClick = { navController.navigate("carrito") },
+                    onProfileClick = { navController.navigate("perfil") }
                 )
             }
         ) { paddingValues ->
@@ -161,6 +150,15 @@ fun CatalogoScreen(navController: NavController) {
                             }
                         }
                     }
+                }
+
+                item {
+                    CommonFooter(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.background)
+                    )
+
                 }
             }
         }

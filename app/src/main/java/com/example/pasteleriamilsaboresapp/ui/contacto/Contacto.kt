@@ -9,10 +9,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.pasteleriamilsaboresapp.ui.components.CommonFooter
 import com.example.pasteleriamilsaboresapp.ui.components.CommonTopBar
 import com.example.pasteleriamilsaboresapp.ui.theme.BeigeSuave
 import com.example.pasteleriamilsaboresapp.ui.theme.CafeSuave
+import kotlinx.coroutines.launch
 
 //validar correos con dominios específicos
 class ContactValidator {
@@ -27,16 +30,19 @@ class ContactValidator {
 }
 
 @Composable
-fun ContactScreen() {
+fun ContactScreen(navController: NavController) {
+
+    val scope = rememberCoroutineScope()
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
     Scaffold(
         topBar = {
             CommonTopBar(
-                onMenuClick = { },
-                onCartClick = { },
-                onProfileClick = { }
+                onMenuClick = { scope.launch { drawerState.open() } },
+                onCartClick = { navController.navigate("carrito") },
+                onProfileClick = { navController.navigate("perfil") }
             )
-        },
-        bottomBar = { CommonFooter() }
+        }
     ) { innerPadding ->
         Surface(
             modifier = Modifier
@@ -52,7 +58,16 @@ fun ContactScreen() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 ContactForm()
+
+                Spacer(modifier = Modifier.height(32.dp)) // separador opcional
+
+                CommonFooter(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(BeigeSuave)
+                )
             }
+
         }
     }
 }
@@ -217,6 +232,6 @@ fun ContactForm() {
 @Composable // Genera Interfz Garfica
 fun ContactScreenreview(){
     MaterialTheme {
-        ContactScreen()
+        ContactScreen(navController = rememberNavController())
     }
 }// Fin HomeScreen
