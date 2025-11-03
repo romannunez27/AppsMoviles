@@ -2,6 +2,7 @@ package com.example.pasteleriamilsaboresapp.ui.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -30,29 +31,16 @@ fun LoginScreen(
     val state = vm.uiState
     var showPass by remember { mutableStateOf(false) }
 
-    // 🌸 Aplica tu tema pastel
     PasteleriaMilSaboresTheme {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = "Pastelería Mil Sabores 🍰",
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = RosaPastel
-                    )
-                )
-            }
-        ) { innerPadding ->
+        // ❌ Quitamos el Scaffold con TopBar, ya no lo necesitas aquí
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
             Column(
                 modifier = Modifier
-                    .padding(innerPadding)
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
                     .padding(24.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -61,7 +49,7 @@ fun LoginScreen(
                 Text(
                     text = "Bienvenido/a",
                     style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = CafeSuave
                 )
 
                 // 🧁 Logo
@@ -122,7 +110,7 @@ fun LoginScreen(
 
                 Spacer(Modifier.height(40.dp))
 
-                // 🎀 Botón principal
+                // 🎀 Botón principal con borde CaféSuave
                 Button(
                     onClick = {
                         vm.submit { user ->
@@ -135,7 +123,8 @@ fun LoginScreen(
                     enabled = !state.isLoading,
                     modifier = Modifier
                         .fillMaxWidth(0.6f)
-                        .height(50.dp),
+                        .height(50.dp)
+                        .border(2.dp, CafeSuave, MaterialTheme.shapes.medium), // 👈 Borde café agregado
                     colors = ButtonDefaults.buttonColors(
                         containerColor = RosaPastel,
                         contentColor = CafeSuave,
@@ -145,7 +134,7 @@ fun LoginScreen(
                 ) {
                     Text(
                         if (state.isLoading) "Validando..." else "Iniciar sesión",
-                        style = MaterialTheme.typography.labelLarge
+                        style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
                     )
                 }
             }

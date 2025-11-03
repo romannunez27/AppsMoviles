@@ -29,51 +29,56 @@ class ContactValidator {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContactScreen(navController: NavController) {
-
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
-
-    Scaffold(
-        topBar = {
-            CommonTopBar(
-                onMenuClick = { scope.launch { drawerState.open() } },
-                onCartClick = { navController.navigate("carrito") },
-                onProfileClick = { navController.navigate("perfil") }
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            com.example.pasteleriamilsaboresapp.ui.view.DrawerMenu( // 👈 asegúrate de importar el correcto
+                navController = navController,
+                drawerState = drawerState,
+                closeDrawer = { scope.launch { drawerState.close() } }
             )
         }
-    ) { innerPadding ->
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            color = BeigeSuave
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(24.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                ContactForm()
-
-                Spacer(modifier = Modifier.height(32.dp)) // separador opcional
-
-                CommonFooter(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(BeigeSuave)
+    ) {
+        Scaffold(
+            topBar = {
+                CommonTopBar(
+                    onMenuClick = { scope.launch { drawerState.open() } },
+                    onCartClick = { navController.navigate("carrito") },
+                    onProfileClick = { navController.navigate("perfil") }
                 )
             }
-
+        ) { innerPadding ->
+            Surface(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                color = BeigeSuave
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(24.dp),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    ContactForm()
+                    Spacer(modifier = Modifier.height(32.dp))
+                    CommonFooter(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(BeigeSuave)
+                    )
+                }
+            }
         }
     }
 }
-
-
 
 @Composable
 fun ContactForm() {
@@ -129,8 +134,6 @@ fun ContactForm() {
                     )
                 }
             }
-
-
 
             // Correo
 
