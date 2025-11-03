@@ -2,31 +2,65 @@ package com.example.pasteleriamilsaboresapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pasteleriamilsaboresapp.data.model.Compra
 import com.example.pasteleriamilsaboresapp.data.model.Producto
-import com.example.pasteleriamilsaboresapp.data.repository.ProductRepository
+import com.example.pasteleriamilsaboresapp.data.repository.ProductoRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class ProductoViewModel(private val repository: ProductRepository) : ViewModel() {
+class ProductoViewModel(
+    private val repository: ProductoRepository = ProductoRepository()
+) : ViewModel() {
 
     private val _productos = MutableStateFlow<List<Producto>>(emptyList())
     val productos: StateFlow<List<Producto>> = _productos.asStateFlow()
 
+    private val _productoSeleccionado = MutableStateFlow<Producto?>(null)
+    val productoSeleccionado: StateFlow<Producto?> = _productoSeleccionado.asStateFlow()
+
     init {
-        // 🔄 Cargar productos desde Room automáticamente
+        cargarProductosDesdeFirebase()
+    }
+
+    // ☁️ Cargar todos los productos desde Firebase
+    fun cargarProductosDesdeFirebase() {
         viewModelScope.launch {
-            repository.obtenerProductos().collectLatest { lista ->
-                _productos.value = lista
-            }
+            val resultado = repository.obtenerProductos(limite = 20)
+            _productos.value = resultado.productos
         }
     }
 
-    fun guardarProducto(producto: Producto) {
+    // ☁️ Cargar un producto específico
+    fun cargarProductoDesdeFirestore(id: String) {
         viewModelScope.launch {
-            repository.insertarProducto(producto)
+            val producto = repository.obtenerProductoPorId(id)
+            _productoSeleccionado.value = producto
+        }
+    }
+
+    // ☁️ Registrar compra y reducir stock
+    fun guardarCompra(
+        producto: Producto,
+        cantidad: Int,
+        direccion: String,
+        mensajeDedicatoria: Boolean,
+        agregarVela: Boolean
+    ) {
+        viewModelScope.launch {
+            val compra = Compra(
+                productoId = producto.id,
+                nombreProducto = producto.nombre,
+                cantidad = cantidad,
+                direccion = direccion,
+                mensajeDedicatoria = mensajeDedicatoria,
+                agregarVela = agregarVela,
+                precioTotal = producto.precio * cantidad
+            )
+
+            repository.registrarCompra(compra)
+            repository.actualizarStock(producto.id, producto.stock - cantidad)
         }
     }
 }

@@ -4,32 +4,27 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.pasteleriamilsaboresapp.data.dao.ProductoDao
-import com.example.pasteleriamilsaboresapp.data.model.Producto
 
+// ⚠️ No tiene entidades, así no se procesa nada.
 @Database(
-    entities = [Producto::class],
-    version=1,
+    entities = [],
+    version = 1,
     exportSchema = false
 )
-
-abstract class ProductoDataBase: RoomDatabase(){
-
-    abstract fun productoDao(): ProductoDao
-
-    companion object{
-
+abstract class ProductoDataBase : RoomDatabase() {
+    // No implementes DAOs aún
+    companion object {
         @Volatile
-        private var INSTANCE: ProductoDataBase?=null
+        private var INSTANCE: ProductoDataBase? = null
 
-        fun getDatabase(context: Context): ProductoDataBase{
-            return INSTANCE?: synchronized(this){
+        fun getDatabase(context: Context): ProductoDataBase {
+            return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     ProductoDataBase::class.java,
                     "producto_database"
                 ).build()
-                INSTANCE=instance
+                INSTANCE = instance
                 instance
             }
         }

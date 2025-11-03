@@ -3,16 +3,17 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 
-    // Agregar esto para habilitar KAPT
+    // 🔹 Habilitar KAPT para Room
     kotlin("kapt")
 
+    // 🔥 Plugins de Firebase
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
     namespace = "com.example.pasteleriamilsaboresapp"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.pasteleriamilsaboresapp"
@@ -33,19 +34,34 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
+
     buildFeatures {
         compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1"
+    }
+
+    packaging {
+        resources {
+            // 🧩 Corregido: faltaba cerrar llave
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
     }
 }
 
 dependencies {
+    // 🧁 Core Compose y UI
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -55,19 +71,32 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation("io.coil-kt:coil-compose:2.4.0")
 
-    // Dependencia para la navegación con Jetpack Compose
+    // 🧭 Navegación con Compose
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
-    // Íconos (core opcional) y EXTENDIDOS (¡este es el clave!)
+    // 🎨 Material Icons y Material3
     implementation("androidx.compose.material:material-icons-core")
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.material3:material3:1.3.0")
-    // Dependencias Room
-    implementation("androidx.room:room-runtime:2.6.1")
-    implementation(libs.androidx.material3)
-    kapt("androidx.room:room-compiler:2.6.1")          // Misma versión
-    implementation("androidx.room:room-ktx:2.6.1")     // Misma versión
 
+    // 💾 Room (para credenciales locales)
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+
+    implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-crashlytics-ktx")
+
+    // 🔁 Coroutines + Play Services (necesario para await())
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1")
+
+    // 🧩 ViewModel + Compose
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+
+    // ✅ Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

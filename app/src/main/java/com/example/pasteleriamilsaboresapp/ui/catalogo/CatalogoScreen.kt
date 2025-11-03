@@ -9,60 +9,36 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.pasteleriamilsaboresapp.R
+import coil.compose.rememberAsyncImagePainter
 import com.example.pasteleriamilsaboresapp.ui.theme.PasteleriaMilSaboresTheme
+import com.example.pasteleriamilsaboresapp.ui.theme.MarronOscuro
+import com.example.pasteleriamilsaboresapp.ui.theme.RosaPastel
 import com.example.pasteleriamilsaboresapp.ui.view.DrawerMenu
+import com.example.pasteleriamilsaboresapp.viewmodel.ProductoViewModel
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
-import com.example.pasteleriamilsaboresapp.ui.theme.CafeSuave
-import com.example.pasteleriamilsaboresapp.ui.theme.MarronOscuro
-import com.example.pasteleriamilsaboresapp.ui.theme.RosaPastel
-
-data class ProductoCatalogo(
-    val codigo: String,
-    val nombre: String,
-    val precio: Int,
-    val img: Int
-)
-
-// 🔹 Lista de productos estáticos
-val productosCatalogo = listOf(
-    ProductoCatalogo("TC001", "Torta Cuadrada de Chocolate", 45000, R.drawable.tc001),
-    ProductoCatalogo("TC002", "Torta Cuadrada de Frutas", 50000, R.drawable.tc002),
-    ProductoCatalogo("TT001", "Torta Circular de Vainilla", 40000, R.drawable.tt001),
-    ProductoCatalogo("TT002", "Torta Circular de Manjar", 42000, R.drawable.tt002),
-    ProductoCatalogo("PI001", "Mousse de Chocolate", 5000, R.drawable.pi001),
-    ProductoCatalogo("PI002", "Tiramisú Clásico", 5500, R.drawable.pi002),
-    ProductoCatalogo("PSA001", "Torta Sin Azúcar de Naranja", 48000, R.drawable.psa001),
-    ProductoCatalogo("PSA002", "Cheesecake Sin Azúcar", 47000, R.drawable.psa002),
-    ProductoCatalogo("PT001", "Empanada de Manzana", 3000, R.drawable.pt001),
-    ProductoCatalogo("PT002", "Tarta de Santiago", 6000, R.drawable.pt002),
-    ProductoCatalogo("PG001", "Brownie Sin Gluten", 4000, R.drawable.pg001),
-    ProductoCatalogo("PG002", "Pan Sin Gluten", 3500, R.drawable.pg002),
-    ProductoCatalogo("PV001", "Torta Vegana de Chocolate", 50000, R.drawable.pv001),
-    ProductoCatalogo("PV002", "Galletas Veganas de Avena", 4500, R.drawable.pv002),
-    ProductoCatalogo("TE001", "Torta Especial de Cumpleaños", 55000, R.drawable.te001),
-    ProductoCatalogo("TE002", "Torta Especial de Boda", 60000, R.drawable.te002)
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CatalogoScreen(navController: NavController) {
+fun CatalogoScreen(
+    navController: NavController,
+    productoViewModel: ProductoViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val productos by productoViewModel.productos.collectAsState()
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -73,8 +49,7 @@ fun CatalogoScreen(navController: NavController) {
                 closeDrawer = { scope.launch { drawerState.close() } }
             )
         }
-    )
-    {
+    ) {
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -97,70 +72,83 @@ fun CatalogoScreen(navController: NavController) {
                 )
             }
         ) { paddingValues ->
-            LazyColumn(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
-                    .padding(12.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(productosCatalogo) { producto ->
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.background
-                        )
-                    ) {
-                        Column(
+            if (productos.isEmpty()) {
+                // 🌀 Estado de carga vacío
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(productos) { producto ->
+                        Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(12.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                                .padding(horizontal = 8.dp),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.background
+                            )
                         ) {
-                            // Imagen con tamaño estandarizado
-                            Image(
-                                painter = painterResource(id = producto.img),
-                                contentDescription = producto.nombre,
+                            Column(
                                 modifier = Modifier
-                                    .height(180.dp)
-                                    .width(220.dp)
-                                    .padding(6.dp),
-                                contentScale = ContentScale.Crop
-                            )
-
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            Text(
-                                text = producto.nombre,
-                                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                                textAlign = TextAlign.Center,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-
-                            Text(
-                                text = "$${producto.precio}",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-
-                            Spacer(modifier = Modifier.height(10.dp))
-
-                            // Botón "Ver detalles" con borde visible
-                            OutlinedButton(
-                                onClick = {
-                                    val nombreCodificado = URLEncoder.encode(producto.nombre, StandardCharsets.UTF_8.toString())
-                                    navController.navigate("productoForm/$nombreCodificado/${producto.precio}")
-                                },
-                                border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary),
-                                colors = ButtonDefaults.outlinedButtonColors(
-                                    contentColor = RosaPastel
-                                )
+                                    .fillMaxWidth()
+                                    .padding(12.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Text("Ver detalles", color = MarronOscuro)
+                                // 🖼️ Imagen desde Firestore (URL)
+                                Image(
+                                    painter = rememberAsyncImagePainter(model = producto.imagen),
+                                    contentDescription = producto.nombre,
+                                    modifier = Modifier
+                                        .height(180.dp)
+                                        .width(220.dp)
+                                        .clip(MaterialTheme.shapes.medium),
+                                    contentScale = ContentScale.Crop
+                                )
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                // 🧁 Nombre del producto
+                                Text(
+                                    text = producto.nombre,
+                                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                                    textAlign = TextAlign.Center,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+
+                                // 💵 Precio
+                                Text(
+                                    text = "$${producto.precio}",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+
+                                Spacer(modifier = Modifier.height(10.dp))
+
+                                // 🔘 Botón "Ver detalles"
+                                OutlinedButton(
+                                    onClick = {
+                                        navController.navigate("productoFrom/${producto.id}")
+                                    },
+                                    border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary),
+                                    colors = ButtonDefaults.outlinedButtonColors(
+                                        contentColor = RosaPastel
+                                    )
+                                ) {
+                                    Text("Ver detalles", color = MarronOscuro)
+                                }
                             }
                         }
                     }

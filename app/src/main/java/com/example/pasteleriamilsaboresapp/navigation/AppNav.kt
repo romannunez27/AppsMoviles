@@ -13,7 +13,7 @@ import com.example.pasteleriamilsaboresapp.ui.nosotros.NosotrosScreen
 import com.example.pasteleriamilsaboresapp.ui.splash.SplashScreen
 import com.example.pasteleriamilsaboresapp.ui.catalogo.CatalogoScreen
 import com.example.pasteleriamilsaboresapp.ui.home.HomeUserScreen
-import com.example.pasteleriamilsaboresapp.view.ProductoFormScreen
+import com.example.pasteleriamilsaboresapp.view.ProductoFromScreen
 import com.example.pasteleriamilsaboresapp.ui.theme.PasteleriaMilSaboresTheme
 
 @Composable
@@ -23,9 +23,9 @@ fun AppNav() {
     PasteleriaMilSaboresTheme {
         NavHost(
             navController = navController,
-            startDestination = "splash" // 🌸 inicia en splash
+            startDestination = "splash"
         ) {
-            // 🩷 Pantalla de inicio animada
+            // 🌸 Pantalla inicial
             composable("splash") {
                 SplashScreen(navController = navController)
             }
@@ -35,7 +35,7 @@ fun AppNav() {
                 LoginScreen(navController = navController)
             }
 
-            // 🏠 Home principal con Drawer
+            // 🏠 Home principal
             composable("home") {
                 HomeUserScreen(navController = navController)
             }
@@ -45,31 +45,28 @@ fun AppNav() {
                 CatalogoScreen(navController = navController)
             }
 
-            //Blog
-            composable("blogs"){
+            // 🧁 Detalle del producto (ruta coherente con tu naming)
+            composable(
+                route = "productFrom/{productoId}", // ✅ corregido
+                arguments = listOf(
+                    navArgument("productoId") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val productoId = backStackEntry.arguments?.getString("productoId") ?: ""
+                ProductoFromScreen( // ✅ coincide con tu clase real
+                    navController = navController,
+                    productoId = productoId
+                )
+            }
+
+            // 📰 Blog
+            composable("blogs") {
                 BlogPage(navController = navController)
             }
 
             // ℹ️ Nosotros
             composable("nosotros") {
                 NosotrosScreen(navController = navController)
-            }
-
-            // 🧁 Formulario de producto (detalle)
-            composable(
-                route = "productoForm/{nombre}/{precio}",
-                arguments = listOf(
-                    navArgument("nombre") { type = NavType.StringType },
-                    navArgument("precio") { type = NavType.StringType }
-                )
-            ) { backStackEntry ->
-                val nombre = Uri.decode(backStackEntry.arguments?.getString("nombre") ?: "")
-                val precio = backStackEntry.arguments?.getString("precio") ?: ""
-                ProductoFormScreen(
-                    navController = navController,
-                    nombre = nombre,
-                    precio = precio
-                )
             }
         }
     }

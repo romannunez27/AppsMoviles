@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "925496431859",
+    "project_id": "tiendapasteleriamilsabor-de980",
+    "storage_bucket": "tiendapasteleriamilsabor-de980.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:925496431859:android:a643be2fe1a9db674e5386",
+        "android_client_info": {
+          "package_name": "com.example.pasteleriamilsaboresapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlCPT3tXpbs3tUz6jQMZ1yaiCUXt1VvHg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
