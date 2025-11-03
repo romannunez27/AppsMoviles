@@ -47,7 +47,7 @@ fun AppNav() {
 
             //Blog
             composable("blogs"){
-                BlogPage()
+                BlogPage(navController = navController)
             }
 
             // ℹ️ Nosotros

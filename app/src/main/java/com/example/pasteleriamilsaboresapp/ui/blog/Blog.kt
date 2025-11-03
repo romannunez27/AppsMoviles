@@ -1,28 +1,36 @@
 package com.example.pasteleriamilsaboresapp.ui.blog
 
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.pasteleriamilsaboresapp.R
 import com.example.pasteleriamilsaboresapp.ui.components.CommonFooter
 import com.example.pasteleriamilsaboresapp.ui.components.CommonTopBar
 import com.example.pasteleriamilsaboresapp.ui.theme.BeigeSuave
 import com.example.pasteleriamilsaboresapp.ui.theme.FondoCrema
 import com.example.pasteleriamilsaboresapp.ui.theme.PasteleriaMilSaboresTheme
-import com.example.pasteleriamilsaboresapp.ui.theme.RosaIntenso
+import com.example.pasteleriamilsaboresapp.ui.view.DrawerMenu
+import kotlinx.coroutines.launch
 
 
 //Modelo de datos
@@ -71,33 +79,38 @@ fun BlogScreen(onPostClick: (Int) -> Unit) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BlogPage() {
-
+fun BlogPage(navController: NavController) {
     var selectedPost by remember { mutableStateOf<BlogPost?>(null) }
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = BeigeSuave
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            DrawerMenu(
+                navController = navController,
+                drawerState = drawerState,
+                closeDrawer = { scope.launch { drawerState.close() } }
+            )
+        }
     ) {
         Scaffold(
-            //topBar
             topBar = {
                 CommonTopBar(
-                    //title = "Cntacto",
-                    onMenuClick = { /* abrir menú lateral */ },
-                    onCartClick = { /* ir al carrito */ },
-                    onProfileClick = { /* ir al perfil */ }
+                    onMenuClick = { scope.launch { drawerState.open() } },
+                    onCartClick = { navController.navigate("catalogo") },
+                    onProfileClick = { navController.navigate("nosotros") }
                 )
             },
-            //Footer
             bottomBar = { CommonFooter() }
-
         ) { innerPadding ->
-            Column(modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .background(FondoCrema)
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+                    .background(FondoCrema)
             ) {
                 if (selectedPost == null) {
                     BlogScreen(onPostClick = { postId ->
@@ -109,7 +122,6 @@ fun BlogPage() {
                         onBack = { selectedPost = null }
                     )
                 }
-
             }
         }
     }
@@ -119,8 +131,9 @@ fun BlogPage() {
 @Preview(showBackground = true)
 @Composable
 fun BlogPageScreenPreview() {
+    val fakeNavController = rememberNavController() // 💡 simulació
     PasteleriaMilSaboresTheme {
-        BlogPage()
+        BlogPage(navController = fakeNavController)
     }
 }
 
