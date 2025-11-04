@@ -54,6 +54,11 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation("io.coil-kt:coil-compose:2.4.0")
+    //Dependencias para mapa
+
+    implementation("org.maplibre.gl:android-sdk:11.5.0")
+
+
 
     // Dependencia para la navegación con Jetpack Compose
     implementation("androidx.navigation:navigation-compose:2.7.7")

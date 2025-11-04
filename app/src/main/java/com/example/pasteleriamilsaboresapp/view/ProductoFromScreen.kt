@@ -2,7 +2,6 @@ package com.example.pasteleriamilsaboresapp.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -20,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.pasteleriamilsaboresapp.data.model.Producto
 import com.example.pasteleriamilsaboresapp.data.database.ProductoDataBase
 import com.example.pasteleriamilsaboresapp.data.repository.ProductRepository
+import com.example.pasteleriamilsaboresapp.ui.components.MapaInteractivo
 import com.example.pasteleriamilsaboresapp.ui.theme.PasteleriaMilSaboresTheme
 import com.example.pasteleriamilsaboresapp.viewmodel.ProductoViewModel
 import com.example.pasteleriamilsaboresapp.viewmodel.ProductoViewModelFactory
@@ -31,7 +31,7 @@ fun ProductoFormScreen(
     nombre: String,
     precio: String
 ) {
-    // ✅ Inicialización segura del ViewModel con su repositorio y base de datos
+    // ✅ Inicialización del ViewModel con repositorio y DB
     val context = LocalContext.current
     val database = ProductoDataBase.getDatabase(context)
     val repository = ProductRepository(database.productoDao())
@@ -39,14 +39,26 @@ fun ProductoFormScreen(
         factory = ProductoViewModelFactory(repository)
     )
 
-    // Estados del formulario
-    var cantidad by remember { mutableStateOf(TextFieldValue("")) }
+    // 🧁 Estados del formulario
+    var cantidad by remember { mutableStateOf(TextFieldValue("1")) }
     var direccion by remember { mutableStateOf(TextFieldValue("")) }
     var mensajeDedicatoria by remember { mutableStateOf(false) }
     var agregarVela by remember { mutableStateOf(false) }
     var mensajeExito by remember { mutableStateOf(false) }
 
-    // Layout principal
+    // 🧮 Cálculo de totales
+    val precioUnitario = precio.toIntOrNull() ?: 0
+    val cantidadInt = cantidad.text.toIntOrNull() ?: 0
+    val subtotal = precioUnitario * cantidadInt
+    val descuento = 0
+    val total = subtotal - descuento
+
+    // 🗺️ Función para actualizar la dirección al seleccionar ubicación en el mapa
+    fun actualizarDireccionDesdeMapa(coords: String) {
+        direccion = TextFieldValue(coords)
+    }
+
+    // 🧱 Layout principal
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -65,9 +77,9 @@ fun ProductoFormScreen(
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            // 💵 Precio
+            // 💵 Precio unitario
             Text(
-                text = "Precio: $$precio",
+                text = "Precio unitario: $$precio",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -77,15 +89,13 @@ fun ProductoFormScreen(
             // 🔢 Campo cantidad
             OutlinedTextField(
                 value = cantidad,
-                onValueChange = { if (it.text.all { c -> c.isDigit() }) cantidad = it },
+                onValueChange = {
+                    if (it.text.all { c -> c.isDigit() }) cantidad = it
+                },
                 label = { Text("Cantidad") },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier.fillMaxWidth(0.9f),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    focusedLabelColor = MaterialTheme.colorScheme.primary
-                )
+                modifier = Modifier.fillMaxWidth(0.9f)
             )
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -102,6 +112,19 @@ fun ProductoFormScreen(
                     focusedLabelColor = MaterialTheme.colorScheme.primary
                 )
             )
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // 🗺️ Mapa interactivo (MapLibre)
+            MapaInteractivo(
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .height(200.dp),
+                direccionTexto = direccion.text, // 👈 vincula el texto actual
+                onLocationSelected = { nuevaDireccion ->
+                    direccion = TextFieldValue(nuevaDireccion) // 👈 actualiza el campo
+                }
+            )
+
 
             Spacer(modifier = Modifier.height(10.dp))
 
@@ -114,10 +137,7 @@ fun ProductoFormScreen(
                 Text("¿Agregar mensaje dedicatoria?", color = MaterialTheme.colorScheme.onSurface)
                 Switch(
                     checked = mensajeDedicatoria,
-                    onCheckedChange = { mensajeDedicatoria = it },
-                    colors = SwitchDefaults.colors(
-                        checkedThumbColor = MaterialTheme.colorScheme.primary
-                    )
+                    onCheckedChange = { mensajeDedicatoria = it }
                 )
             }
 
@@ -132,14 +152,33 @@ fun ProductoFormScreen(
                 Text("¿Agregar vela?", color = MaterialTheme.colorScheme.onSurface)
                 Switch(
                     checked = agregarVela,
-                    onCheckedChange = { agregarVela = it },
-                    colors = SwitchDefaults.colors(
-                        checkedThumbColor = MaterialTheme.colorScheme.primary
-                    )
+                    onCheckedChange = { agregarVela = it }
                 )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // 💰 Subtotal, descuento y total
+            Card(
+                modifier = Modifier.fillMaxWidth(0.9f),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                elevation = CardDefaults.cardElevation(6.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text("Subtotal: $$subtotal", style = MaterialTheme.typography.bodyLarge)
+                    Text("Descuento: $$descuento", style = MaterialTheme.typography.bodyLarge)
+                    Divider(modifier = Modifier.padding(vertical = 6.dp))
+                    Text(
+                        "Total: $$total",
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
 
             // 🛒 Botón de compra
             Button(
@@ -147,8 +186,8 @@ fun ProductoFormScreen(
                     if (cantidad.text.isNotBlank() && direccion.text.isNotBlank()) {
                         val nuevoProducto = Producto(
                             nombre = nombre,
-                            precio = precio,
-                            cantidad = cantidad.text,
+                            precio = total.toString(),
+                            cantidad = cantidadInt,
                             direccion = direccion.text,
                             mensajeDedicatoria = mensajeDedicatoria,
                             agregarVela = agregarVela
@@ -176,7 +215,7 @@ fun ProductoFormScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             // 🔙 Volver al catálogo
             TextButton(onClick = { navController.popBackStack() }) {
@@ -190,7 +229,7 @@ fun ProductoFormScreen(
 @Composable
 fun PreviewProductoFormScreen() {
     PasteleriaMilSaboresTheme {
-        Surface(color = MaterialTheme.colorScheme.background) {
+        Surface {
             ProductoFormScreen(
                 navController = rememberNavController(),
                 nombre = "Torta Cuadrada de Chocolate",

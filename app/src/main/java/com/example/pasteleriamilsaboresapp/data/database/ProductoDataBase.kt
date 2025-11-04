@@ -9,7 +9,7 @@ import com.example.pasteleriamilsaboresapp.data.model.Producto
 
 @Database(
     entities = [Producto::class],
-    version=1,
+    version=2,
     exportSchema = false
 )
 
@@ -28,7 +28,9 @@ abstract class ProductoDataBase: RoomDatabase(){
                     context.applicationContext,
                     ProductoDataBase::class.java,
                     "producto_database"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
                 INSTANCE=instance
                 instance
             }

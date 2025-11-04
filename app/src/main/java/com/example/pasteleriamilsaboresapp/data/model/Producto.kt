@@ -9,7 +9,7 @@ data class Producto(
     val id:Int =0,
     val nombre: String,
     val precio:String,
-    val cantidad:String,
+    val cantidad:Int,
     val direccion: String,
     val mensajeDedicatoria: Boolean,
     val agregarVela:Boolean
