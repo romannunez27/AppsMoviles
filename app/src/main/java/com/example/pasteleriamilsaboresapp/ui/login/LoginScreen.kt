@@ -1,5 +1,6 @@
 package com.example.pasteleriamilsaboresapp.ui.login
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,7 +33,6 @@ fun LoginScreen(
     var showPass by remember { mutableStateOf(false) }
 
     PasteleriaMilSaboresTheme {
-        // ❌ Quitamos el Scaffold con TopBar, ya no lo necesitas aquí
         Surface(
             modifier = Modifier
                 .fillMaxSize()
@@ -64,7 +64,7 @@ fun LoginScreen(
 
                 Spacer(Modifier.height(24.dp))
 
-                // 🧁 Campo Usuario
+                // ✉️ Usuario
                 OutlinedTextField(
                     value = state.username,
                     onValueChange = vm::onUsernameChange,
@@ -78,7 +78,7 @@ fun LoginScreen(
                     modifier = Modifier.fillMaxWidth(0.9f)
                 )
 
-                // 🧁 Campo Contraseña
+                // 🔒 Contraseña
                 OutlinedTextField(
                     value = state.password,
                     onValueChange = vm::onPasswordChange,
@@ -108,39 +108,56 @@ fun LoginScreen(
                     )
                 }
 
-                Spacer(Modifier.height(40.dp))
+                Spacer(Modifier.height(30.dp))
 
-                // 🎀 Botón principal con borde CaféSuave
-                Button(
-                    onClick = {
-                        vm.submit { user ->
-                            navController.navigate("home") {
-                                popUpTo("login") { inclusive = true }
-                                launchSingleTop = true
-                            }
-                        }
-                    },
-                    enabled = !state.isLoading,
-                    modifier = Modifier
-                        .fillMaxWidth(0.6f)
-                        .height(50.dp)
-                        .border(2.dp, CafeSuave, MaterialTheme.shapes.medium), // 👈 Borde café agregado
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = RosaPastel,
-                        contentColor = CafeSuave,
-                        disabledContainerColor = BeigeSuave
-                    ),
-                    shape = MaterialTheme.shapes.medium
+                // 🎀 Botones Login + Registro
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        if (state.isLoading) "Validando..." else "Iniciar sesión",
-                        style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
-                    )
+                    Button(
+                        onClick = {
+                            vm.submit { user ->
+                                navController.navigate("home") {
+                                    popUpTo("login") { inclusive = true }
+                                    launchSingleTop = true
+                                }
+                            }
+                        },
+                        enabled = !state.isLoading,
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(50.dp)
+                            .border(2.dp, CafeSuave, MaterialTheme.shapes.medium),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = RosaPastel,
+                            contentColor = CafeSuave
+                        )
+                    ) {
+                        Text(
+                            if (state.isLoading) "Validando..." else "Iniciar",
+                            style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
+                        )
+                    }
+
+                    OutlinedButton(
+                        onClick = { navController.navigate("registro") },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(50.dp),
+                        border = BorderStroke(2.dp, CafeSuave),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = CafeSuave
+                        )
+                    ) {
+                        Text("Registrar")
+                    }
                 }
             }
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
