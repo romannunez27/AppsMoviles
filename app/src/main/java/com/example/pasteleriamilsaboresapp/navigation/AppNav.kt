@@ -103,6 +103,7 @@ fun AppNav() {
                 }
 
                 QrScannerScreen(
+                    navController = navController, // 👈 nuevo parámetro
                     viewModel = viewModel,
                     hasCameraPermission = hasPermission,
                     onRequestPermission = {

@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.pasteleriamilsaboresapp.utils.QrScanner
 import com.example.pasteleriamilsaboresapp.viewmodel.QrViewModel
 import com.example.pasteleriamilsaboresapp.ui.theme.*
@@ -23,6 +24,7 @@ import com.example.pasteleriamilsaboresapp.ui.theme.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QrScannerScreen(
+    navController: NavController, // 👈 agregado para usar popBackStack()
     viewModel: QrViewModel,
     hasCameraPermission: Boolean,
     onRequestPermission: () -> Unit
@@ -51,7 +53,7 @@ fun QrScannerScreen(
             )
 
             when {
-                // 🚫 No tiene permisos de cámara
+                // 🚫 Sin permiso
                 !hasCameraPermission -> {
                     Text(
                         "Permiso de cámara requerido",
@@ -78,7 +80,7 @@ fun QrScannerScreen(
                     }
                 }
 
-                // 🎥 Tiene permisos y está escaneando
+                // 🎥 Escaneando
                 qrResult == null && isScanning -> {
                     Text(
                         "Apunta tu cámara al código QR",
@@ -94,13 +96,11 @@ fun QrScannerScreen(
                             .background(Color.Transparent),
                         contentAlignment = Alignment.Center
                     ) {
-                        // 📸 Vista de cámara
                         QrScanner(
                             onQrCodeScanned = { qrContent ->
                                 val isUrl = qrContent.startsWith("http://") || qrContent.startsWith("https://")
 
                                 if (isUrl) {
-                                    // 🔗 Abrir automáticamente el enlace en navegador
                                     try {
                                         val intent = Intent(Intent.ACTION_VIEW)
                                         intent.data = Uri.parse(qrContent)
@@ -109,7 +109,6 @@ fun QrScannerScreen(
                                         Toast.makeText(context, "Error al abrir el enlace", Toast.LENGTH_SHORT).show()
                                     }
                                 } else {
-                                    // 🧾 Mostrar el contenido en la pantalla
                                     viewModel.onQrDetected(qrContent)
                                     isScanning = false
                                     Toast.makeText(context, "Código QR detectado", Toast.LENGTH_SHORT).show()
@@ -118,7 +117,7 @@ fun QrScannerScreen(
                             modifier = Modifier.fillMaxSize()
                         )
 
-                        // 🎯 Marco de guía visual
+                        // 🎯 Marco visual
                         Surface(
                             modifier = Modifier
                                 .size(260.dp)
@@ -138,7 +137,7 @@ fun QrScannerScreen(
                     )
                 }
 
-                // ✅ Resultado detectado (no link)
+                // ✅ Resultado detectado
                 qrResult != null -> {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -181,6 +180,17 @@ fun QrScannerScreen(
                         }
                     }
                 }
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            // 🔙 Botón volver
+            OutlinedButton(
+                onClick = { navController.popBackStack() },
+                border = BorderStroke(2.dp, CafeSuave),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = CafeSuave)
+            ) {
+                Text("Volver", fontWeight = FontWeight.Bold)
             }
         }
     }
