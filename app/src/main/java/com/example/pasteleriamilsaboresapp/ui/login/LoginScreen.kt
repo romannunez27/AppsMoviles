@@ -29,7 +29,9 @@ fun LoginScreen(
     navController: NavController,
     vm: LoginViewModel = viewModel()
 ) {
-    val state = vm.uiState
+    // ✅ Accedemos correctamente al estado
+    val state by vm.uiState.collectAsState()
+
     var showPass by remember { mutableStateOf(false) }
 
     PasteleriaMilSaboresTheme {
@@ -64,11 +66,11 @@ fun LoginScreen(
 
                 Spacer(Modifier.height(24.dp))
 
-                // ✉️ Usuario
+                // ✉️ Correo
                 OutlinedTextField(
-                    value = state.username,
-                    onValueChange = vm::onUsernameChange,
-                    label = { Text("Correo o Usuario") },
+                    value = state.correo,
+                    onValueChange = vm::onCorreoChange,
+                    label = { Text("Correo electrónico") },
                     singleLine = true,
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = RosaIntenso,
@@ -99,10 +101,10 @@ fun LoginScreen(
                 )
 
                 // ⚠️ Mensaje de error
-                if (state.error != null) {
+                state.error?.let {
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        text = state.error ?: "",
+                        text = it,
                         color = Color.Red,
                         fontWeight = FontWeight.Bold
                     )
@@ -115,9 +117,10 @@ fun LoginScreen(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    // 🔹 Botón de Iniciar Sesión
                     Button(
                         onClick = {
-                            vm.submit { user ->
+                            vm.login {
                                 navController.navigate("home") {
                                     popUpTo("login") { inclusive = true }
                                     launchSingleTop = true
@@ -140,17 +143,20 @@ fun LoginScreen(
                         )
                     }
 
+                    // 🔹 Botón de Registro
                     OutlinedButton(
                         onClick = { navController.navigate("registro") },
                         modifier = Modifier
                             .weight(1f)
-                            .height(50.dp),
+                            .height(50.dp)
+                            .background(RosaPastel.copy(alpha = 0.25f), shape = MaterialTheme.shapes.medium),
                         border = BorderStroke(2.dp, CafeSuave),
                         colors = ButtonDefaults.outlinedButtonColors(
+                            containerColor = RosaPastel.copy(alpha = 0.2f),
                             contentColor = CafeSuave
                         )
                     ) {
-                        Text("Registrar")
+                        Text("Registrar", fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -158,14 +164,12 @@ fun LoginScreen(
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview() {
     val navController = rememberNavController()
-    val vm = LoginViewModel()
 
     PasteleriaMilSaboresTheme {
-        LoginScreen(navController = navController, vm = vm)
+        LoginScreen(navController = navController)
     }
 }

@@ -8,16 +8,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.pasteleriamilsaboresapp.ui.blog.BlogPage
-import com.example.pasteleriamilsaboresapp.ui.login.LoginScreen
-import com.example.pasteleriamilsaboresapp.ui.nosotros.NosotrosScreen
-import com.example.pasteleriamilsaboresapp.ui.splash.SplashScreen
 import com.example.pasteleriamilsaboresapp.ui.catalogo.CatalogoScreen
 import com.example.pasteleriamilsaboresapp.ui.contacto.ContactScreen
 import com.example.pasteleriamilsaboresapp.ui.home.HomeUserScreen
-import com.example.pasteleriamilsaboresapp.view.ProductoFormScreen
+import com.example.pasteleriamilsaboresapp.ui.login.LoginScreen
+import com.example.pasteleriamilsaboresapp.ui.login.RegistroScreen
+import com.example.pasteleriamilsaboresapp.ui.nosotros.NosotrosScreen
+import com.example.pasteleriamilsaboresapp.ui.splash.SplashScreen
 import com.example.pasteleriamilsaboresapp.ui.theme.PasteleriaMilSaboresTheme
-import java.net.URLDecoder
-import java.nio.charset.StandardCharsets
+import com.example.pasteleriamilsaboresapp.view.ProductoFormScreen
 
 @Composable
 fun AppNav() {
@@ -26,9 +25,9 @@ fun AppNav() {
     PasteleriaMilSaboresTheme {
         NavHost(
             navController = navController,
-            startDestination = "splash" // 🌸 inicia en splash
+            startDestination = "splash" // 🌸 pantalla inicial
         ) {
-            // 🩷 Pantalla de inicio animada
+            // 🩷 Splash (pantalla animada de inicio)
             composable("splash") {
                 SplashScreen(navController = navController)
             }
@@ -38,7 +37,12 @@ fun AppNav() {
                 LoginScreen(navController = navController)
             }
 
-            // 🏠 Home principal con Drawer
+            // 📝 Registro
+            composable("registro") {
+                RegistroScreen(navController = navController)
+            }
+
+            // 🏠 Home principal
             composable("home") {
                 HomeUserScreen(navController = navController)
             }
@@ -48,13 +52,13 @@ fun AppNav() {
                 CatalogoScreen(navController = navController)
             }
 
-            //Blog
-            composable("blogs"){
+            // 📰 Blog
+            composable("blogs") {
                 BlogPage(navController = navController)
             }
 
-            //contacto
-            composable("contacto"){
+            // ☎️ Contacto
+            composable("contacto") {
                 ContactScreen(navController = navController)
             }
 

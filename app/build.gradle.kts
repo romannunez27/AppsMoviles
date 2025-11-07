@@ -51,43 +51,49 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation("io.coil-kt:coil-compose:2.4.0")
-    //Dependencias para mapa
 
-    implementation("org.maplibre.gl:android-sdk:11.5.0")
-
-
-
-    // Dependencia para la navegación con Jetpack Compose
-    implementation("androidx.navigation:navigation-compose:2.7.7")
-
-    // Íconos (core opcional) y EXTENDIDOS (¡este es el clave!)
+    // ✅ Material y Material3
     implementation("androidx.compose.material:material-icons-core")
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.material3:material3:1.3.0")
-    // Dependencias Room
-    implementation("androidx.room:room-runtime:2.6.1")
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.compose.foundation)
-    kapt("androidx.room:room-compiler:2.6.1")          // Misma versión
-    implementation("androidx.room:room-ktx:2.6.1")     // Misma versión
 
+    // ⚠️ No repitas esta línea si ya tienes la anterior, elimina una de estas dos:
+    /// implementation(libs.androidx.material3)   ← esta puedes comentarla o borrar
+    /// para evitar conflictos de versiones
+
+    // 🖼️ Imágenes y coil
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
+    // 🗺️ Mapa (MapLibre)
+    implementation("org.maplibre.gl:android-sdk:11.5.0")
+
+    // 🚀 Navegación Compose
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    // 🧩 Room (Base de datos local)
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+
+    // 🧠 LiveData runtime (si lo usas en ViewModels)
     implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
 
-    // CameraX
+    // 🕒 Manejo de fechas (si no usas java.time directamente)
+    implementation("com.jakewharton.threetenabp:threetenabp:1.4.6")
+
+    // 📸 CameraX
     val camerax_version = "1.3.3"
     implementation("androidx.camera:camera-core:$camerax_version")
     implementation("androidx.camera:camera-camera2:$camerax_version")
     implementation("androidx.camera:camera-lifecycle:$camerax_version")
     implementation("androidx.camera:camera-view:$camerax_version")
 
-    // ZXing para leer QR
+    // 📱 Escáner QR y ML Kit
     implementation("com.google.zxing:core:3.5.3")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
-
-    // ML Kit Barcode Scanning
     implementation("com.google.mlkit:barcode-scanning:17.2.0")
 
+    // 🧪 Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -95,4 +101,5 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
 }

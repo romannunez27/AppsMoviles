@@ -1,30 +1,47 @@
 package com.example.pasteleriamilsaboresapp.ui.login
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
-import com.example.pasteleriamilsaboresapp.data.repository.AuthRepository
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.pasteleriamilsaboresapp.data.database.UsuarioDataBase
+import com.example.pasteleriamilsaboresapp.data.repository.UsuarioRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
-data class LoginViewModel(
-    private val repo: AuthRepository = AuthRepository()
-): ViewModel(){
-    var uiState by mutableStateOf(LoginUiState())
+class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
-    fun onUsernameChange(value:String){
-        uiState=uiState.copy(username=value, error=null)
+    private val usuarioDao = UsuarioDataBase.getDatabase(application).usuarioDao()
+    private val repository = UsuarioRepository(usuarioDao)
+
+    private val _uiState = MutableStateFlow(LoginUiState())
+    val uiState: StateFlow<LoginUiState> = _uiState
+
+    fun onCorreoChange(value: String) {
+        _uiState.value = _uiState.value.copy(correo = value)
     }
 
-    fun onPasswordChange(value: String){
-        uiState=uiState.copy(password=value,error=null)
+    fun onPasswordChange(value: String) {
+        _uiState.value = _uiState.value.copy(password = value)
     }
 
-    fun submit(onSucces:(String) -> Unit){
-        uiState=uiState.copy(isLoading=true, error=null)
+    fun login(onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
 
-        val  oK=repo.login(uiState.username.trim(), uiState.password)
+            val user = repository.login(
+                correo = _uiState.value.correo,
+                password = _uiState.value.password
+            )
 
-        if(oK) onSucces(uiState.username.trim())
-        else uiState = uiState.copy(error="Credenciales invalidas")
+            if (user != null) {
+                onSuccess()
+            } else {
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = "Credenciales incorrectas o usuario no registrado."
+                )
+            }
+        }
     }
 }
