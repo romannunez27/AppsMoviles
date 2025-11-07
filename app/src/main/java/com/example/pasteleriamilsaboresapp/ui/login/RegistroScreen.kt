@@ -5,7 +5,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +31,7 @@ import com.example.pasteleriamilsaboresapp.ui.theme.*
 @Composable
 fun RegistroScreen(
     navController: NavController,
+    qrContent: String = "",
     vm: RegistroViewModel = viewModel()
 ) {
     var nombre by remember { mutableStateOf("") }
@@ -39,36 +44,53 @@ fun RegistroScreen(
     var showPass by remember { mutableStateOf(false) }
     var showConfirmPass by remember { mutableStateOf(false) }
 
+    // Si se escaneó un QR, lo cargamos automáticamente
+    LaunchedEffect(qrContent) {
+        if (qrContent.isNotBlank()) codigo = qrContent
+    }
+
     PasteleriaMilSaboresTheme {
         Surface(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
         ) {
+            // ✅ Scroll para evitar que se oculte contenido
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(24.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp),
+                    .padding(20.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Registro de Usuario", style = MaterialTheme.typography.titleLarge, color = CafeSuave)
+                // 🧁 Encabezado
+                Text(
+                    "Registro de Usuario",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = CafeSuave
+                )
+
+                Spacer(Modifier.height(10.dp))
 
                 Image(
                     painter = painterResource(id = R.drawable.logo_fndo_blanco),
                     contentDescription = null,
                     modifier = Modifier
-                        .fillMaxWidth(0.6f)
-                        .height(130.dp),
+                        .fillMaxWidth(0.55f)
+                        .height(100.dp),
                     contentScale = ContentScale.Fit
                 )
 
+                Spacer(Modifier.height(20.dp))
+
+                // 🟤 Campos de texto
                 OutlinedTextField(
                     value = nombre,
                     onValueChange = { nombre = it },
                     label = { Text("Nombre completo") },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth(0.9f)
+                    modifier = Modifier.fillMaxWidth(0.95f)
                 )
 
                 OutlinedTextField(
@@ -76,7 +98,7 @@ fun RegistroScreen(
                     onValueChange = { correo = it },
                     label = { Text("Correo electrónico") },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth(0.9f)
+                    modifier = Modifier.fillMaxWidth(0.95f)
                 )
 
                 OutlinedTextField(
@@ -84,7 +106,7 @@ fun RegistroScreen(
                     onValueChange = { fechaNacimiento = it },
                     label = { Text("Fecha de nacimiento (AAAA-MM-DD)") },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth(0.9f)
+                    modifier = Modifier.fillMaxWidth(0.95f)
                 )
 
                 OutlinedTextField(
@@ -92,8 +114,39 @@ fun RegistroScreen(
                     onValueChange = { codigo = it },
                     label = { Text("Código promocional (opcional)") },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth(0.9f)
+                    modifier = Modifier.fillMaxWidth(0.95f)
                 )
+
+                // 🔸 Sección QR
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth(0.95f)
+                        .padding(top = 4.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.CameraAlt,
+                        contentDescription = "Escanear QR",
+                        tint = RosaIntenso
+                    )
+
+                    Text(
+                        text = "¿Tienes un código QR promocional?",
+                        color = CafeSuave,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    OutlinedButton(
+                        onClick = { navController.navigate("qrscanner") },
+                        border = BorderStroke(1.dp, RosaIntenso),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = RosaIntenso),
+                        modifier = Modifier.height(38.dp)
+                    ) {
+                        Text("Escanear", style = MaterialTheme.typography.labelSmall)
+                    }
+                }
 
                 OutlinedTextField(
                     value = password,
@@ -106,7 +159,7 @@ fun RegistroScreen(
                             Text(if (showPass) "Ocultar" else "Ver", color = RosaIntenso)
                         }
                     },
-                    modifier = Modifier.fillMaxWidth(0.9f)
+                    modifier = Modifier.fillMaxWidth(0.95f)
                 )
 
                 OutlinedTextField(
@@ -120,16 +173,25 @@ fun RegistroScreen(
                             Text(if (showConfirmPass) "Ocultar" else "Ver", color = RosaIntenso)
                         }
                     },
-                    modifier = Modifier.fillMaxWidth(0.9f)
+                    modifier = Modifier.fillMaxWidth(0.95f)
                 )
 
+                // 🟢 Mensaje dinámico
                 mensaje?.let {
-                    Text(it, color = if (it.contains("exitoso")) Color(0xFF4CAF50) else Color.Red)
+                    Text(
+                        it,
+                        color = if (it.contains("exitoso")) Color(0xFF4CAF50) else Color.Red,
+                        modifier = Modifier.padding(top = 6.dp)
+                    )
                 }
 
-                Spacer(Modifier.height(20.dp))
+                Spacer(Modifier.height(18.dp))
 
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                // 🩷 Botones
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxWidth(0.95f)
+                ) {
                     Button(
                         onClick = {
                             if (nombre.isBlank() || correo.isBlank() || fechaNacimiento.isBlank() ||
@@ -174,7 +236,18 @@ fun RegistroScreen(
                         Text("Volver")
                     }
                 }
+
+                Spacer(Modifier.height(24.dp))
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RegistroScreenPreview() {
+    val navController = rememberNavController()
+    PasteleriaMilSaboresTheme {
+        RegistroScreen(navController = navController)
     }
 }

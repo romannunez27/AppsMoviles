@@ -1,37 +1,26 @@
 package com.example.pasteleriamilsaboresapp.view
 
+import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.pasteleriamilsaboresapp.utils.QrScanner
 import com.example.pasteleriamilsaboresapp.viewmodel.QrViewModel
+import com.example.pasteleriamilsaboresapp.ui.theme.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QrScannerScreen(
     viewModel: QrViewModel,
@@ -42,112 +31,155 @@ fun QrScannerScreen(
     val context = LocalContext.current
     var isScanning by remember { mutableStateOf(true) }
 
-    Column(
+    Surface(
         modifier = Modifier
-            .fillMaxSize()            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .fillMaxSize()
+            .background(BeigeSuave)
+            .padding(16.dp)
     ) {
-        if (!hasCameraPermission) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            // 🧁 Título
             Text(
-                "Permiso de cámara requerido",
+                "Escáner de Código QR",
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Spacer(Modifier.height(16.dp))
-            Text(
-                "Para escanear códigos QR, necesitamos acceso a la cámara",
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center
-            )
-            Spacer(Modifier.height(24.dp))
-            Button(
-                onClick = onRequestPermission
-            ) {
-                Text("Conceder permiso de cámara")
-            }
-        } else if (qrResult == null && isScanning) {
-            Text(
-                "Escanea un código QR",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(bottom = 16.dp)
+                color = CafeSuave,
+                modifier = Modifier.padding(vertical = 16.dp)
             )
 
-            // Usar el nuevo scanner con CameraX
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(400.dp)
-            ) {
-                QrScanner(
-                    onQrCodeScanned = { qrContent ->
-                        // Procesar el QR detectado
-                        viewModel.onQrDetected(qrContent)
-                        isScanning = false
-                        Toast.makeText(context, "QR detectado!", Toast.LENGTH_SHORT).show()
-                    },
-                    modifier = Modifier.fillMaxSize()
-                )
-
-                // Overlay para ayudar al escaneo
-                Surface(
-                    modifier = Modifier
-                        .size(250.dp)
-                        .align(Alignment.Center),
-                    color = Color.Transparent,
-                    shape = MaterialTheme.shapes.medium,
-                    border = BorderStroke(
-                        2.dp,
-                        MaterialTheme.colorScheme.primary
-                    )
-                ) {}
-            }
-
-            Spacer(Modifier.height(16.dp))
-            Text(
-                "Enfoca el código QR en el marco central",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(Modifier.height(8.dp))
-            Text(
-                "La cámara debería activarse automáticamente",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        } else if (qrResult != null) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(16.dp)
-            ) {
-                Text(
-                    "✅ QR Detectado:",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant
-                    )
-                ) {
+            when {
+                // 🚫 No tiene permisos de cámara
+                !hasCameraPermission -> {
                     Text(
-                        qrResult!!.content,
+                        "Permiso de cámara requerido",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = RosaIntenso
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    Text(
+                        "Para escanear códigos QR, necesitamos acceso a la cámara.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
+                        color = CafeSuave
+                    )
+                    Spacer(Modifier.height(24.dp))
+                    Button(
+                        onClick = onRequestPermission,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = RosaPastel,
+                            contentColor = CafeSuave
+                        ),
+                        border = BorderStroke(1.dp, CafeSuave)
+                    ) {
+                        Text("Conceder permiso")
+                    }
+                }
+
+                // 🎥 Tiene permisos y está escaneando
+                qrResult == null && isScanning -> {
+                    Text(
+                        "Apunta tu cámara al código QR",
                         style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(16.dp)
+                        color = CafeSuave,
+                        modifier = Modifier.padding(bottom = 12.dp)
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(400.dp)
+                            .background(Color.Transparent),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        // 📸 Vista de cámara
+                        QrScanner(
+                            onQrCodeScanned = { qrContent ->
+                                val isUrl = qrContent.startsWith("http://") || qrContent.startsWith("https://")
+
+                                if (isUrl) {
+                                    // 🔗 Abrir automáticamente el enlace en navegador
+                                    try {
+                                        val intent = Intent(Intent.ACTION_VIEW)
+                                        intent.data = Uri.parse(qrContent)
+                                        context.startActivity(intent)
+                                    } catch (e: Exception) {
+                                        Toast.makeText(context, "Error al abrir el enlace", Toast.LENGTH_SHORT).show()
+                                    }
+                                } else {
+                                    // 🧾 Mostrar el contenido en la pantalla
+                                    viewModel.onQrDetected(qrContent)
+                                    isScanning = false
+                                    Toast.makeText(context, "Código QR detectado", Toast.LENGTH_SHORT).show()
+                                }
+                            },
+                            modifier = Modifier.fillMaxSize()
+                        )
+
+                        // 🎯 Marco de guía visual
+                        Surface(
+                            modifier = Modifier
+                                .size(260.dp)
+                                .align(Alignment.Center),
+                            color = Color.Transparent,
+                            shape = MaterialTheme.shapes.medium,
+                            border = BorderStroke(3.dp, RosaIntenso)
+                        ) {}
+                    }
+
+                    Spacer(Modifier.height(16.dp))
+                    Text(
+                        "El contenido del código se abrirá automáticamente si es un enlace.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Gray,
+                        textAlign = TextAlign.Center
                     )
                 }
-                Spacer(Modifier.height(16.dp))
-                Button(
-                    onClick = {
-                        viewModel.clearResult()
-                        isScanning = true
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Escanear otro código QR")
+
+                // ✅ Resultado detectado (no link)
+                qrResult != null -> {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            "✅ Código detectado:",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = CafeSuave,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color(0xFFFFF5E1)
+                            ),
+                            border = BorderStroke(1.dp, CafeSuave)
+                        ) {
+                            Text(
+                                qrResult!!.content,
+                                style = MaterialTheme.typography.bodyLarge,
+                                modifier = Modifier.padding(16.dp),
+                                color = CafeSuave
+                            )
+                        }
+                        Spacer(Modifier.height(20.dp))
+                        Button(
+                            onClick = {
+                                viewModel.clearResult()
+                                isScanning = true
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = RosaPastel,
+                                contentColor = CafeSuave
+                            )
+                        ) {
+                            Text("Escanear otro QR", fontWeight = FontWeight.Bold)
+                        }
+                    }
                 }
             }
         }
