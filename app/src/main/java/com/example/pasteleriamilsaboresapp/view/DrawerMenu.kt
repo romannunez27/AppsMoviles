@@ -1,5 +1,6 @@
 package com.example.pasteleriamilsaboresapp.ui.view
 
+import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -28,6 +30,8 @@ fun DrawerMenu(
     drawerState: DrawerState,
     closeDrawer: () -> Unit
 ) {
+    val context = LocalContext.current
+
     // 🌈 Gradiente de fondo pastel
     val gradientBrush = Brush.verticalGradient(
         colors = listOf(RosaPastel, BeigeSuave.copy(alpha = 0.95f))
@@ -106,6 +110,35 @@ fun DrawerMenu(
                         color = MarronOscuro
                     )
                 }
+            }
+
+            // 🚪 NUEVO: Botón “Salir”
+            Spacer(modifier = Modifier.height(10.dp))
+            Divider(color = CafeSuave.copy(alpha = 0.3f))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .clickable {
+                        (context as? Activity)?.finishAffinity() // Cierra la app
+                    }
+                    .background(Color.White.copy(alpha = 0.25f))
+                    .padding(vertical = 10.dp, horizontal = 14.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ExitToApp,
+                    contentDescription = "Salir",
+                    tint = RosaIntenso,
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Text(
+                    text = "Salir",
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MarronOscuro
+                )
             }
         }
 

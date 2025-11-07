@@ -3,9 +3,9 @@ package com.example.pasteleriamilsaboresapp.data.model
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import java.time.LocalDate
-import java.time.Period
-import java.time.format.DateTimeFormatter
+import org.threeten.bp.LocalDate
+import org.threeten.bp.Period
+import org.threeten.bp.format.DateTimeFormatter
 
 @Entity(
     tableName = "usuario",
@@ -18,7 +18,7 @@ data class Usuario(
     val nombre: String,
     val correo: String,
     val password: String,
-    val fechaNacimiento: String, // formato: yyyy-MM-dd
+    val fechaNacimiento: String, // 🇨🇱 formato: dd-MM-yyyy
     val codigoPromocional: String? = null,
 
     // 👇 nuevos campos para uso futuro en el carrito
@@ -29,7 +29,7 @@ data class Usuario(
     /** Calcula edad del usuario **/
     fun calcularEdad(): Int {
         return try {
-            val formato = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            val formato = DateTimeFormatter.ofPattern("dd-MM-yyyy") // 🇨🇱 formato chileno
             val nacimiento = LocalDate.parse(fechaNacimiento, formato)
             Period.between(nacimiento, LocalDate.now()).years
         } catch (e: Exception) {

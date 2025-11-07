@@ -26,6 +26,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.pasteleriamilsaboresapp.R
 import com.example.pasteleriamilsaboresapp.ui.theme.*
+import androidx.compose.ui.text.input.TextFieldValue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,7 +37,7 @@ fun RegistroScreen(
 ) {
     var nombre by remember { mutableStateOf("") }
     var correo by remember { mutableStateOf("") }
-    var fechaNacimiento by remember { mutableStateOf("") }
+    var fechaNacimientoState by remember { mutableStateOf(TextFieldValue("")) }
     var codigo by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
@@ -101,11 +102,34 @@ fun RegistroScreen(
                     modifier = Modifier.fillMaxWidth(0.95f)
                 )
 
+                var fechaNacimientoState by remember { mutableStateOf(TextFieldValue("")) }
+
                 OutlinedTextField(
-                    value = fechaNacimiento,
-                    onValueChange = { fechaNacimiento = it },
-                    label = { Text("Fecha de nacimiento (AAAA-MM-DD)") },
+                    value = fechaNacimientoState,
+                    onValueChange = { newValue ->
+                        val input = newValue.text.filter { it.isDigit() }
+                        if (input.length > 8) return@OutlinedTextField
+
+                        val formatted = buildString {
+                            for (i in input.indices) {
+                                append(input[i])
+                                if (i == 1 || i == 3) append('-')
+                            }
+                        }
+
+                        fechaNacimientoState = newValue.copy(
+                            text = formatted,
+                            selection = androidx.compose.ui.text.TextRange(formatted.length)
+                        )
+                    },
+                    label = { Text("Fecha de nacimiento (día-mes-año)") },
                     singleLine = true,
+                    placeholder = { Text("00-00-0000") },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = RosaIntenso,
+                        unfocusedBorderColor = CafeSuave,
+                        focusedLabelColor = RosaIntenso
+                    ),
                     modifier = Modifier.fillMaxWidth(0.95f)
                 )
 
@@ -194,7 +218,7 @@ fun RegistroScreen(
                 ) {
                     Button(
                         onClick = {
-                            if (nombre.isBlank() || correo.isBlank() || fechaNacimiento.isBlank() ||
+                            if (nombre.isBlank() || correo.isBlank() || fechaNacimientoState.text.isBlank() ||
                                 password.isBlank() || confirmPassword.isBlank()
                             ) {
                                 mensaje = "Completa todos los campos obligatorios"
@@ -205,7 +229,7 @@ fun RegistroScreen(
                                     nombre,
                                     correo,
                                     password,
-                                    fechaNacimiento,
+                                    fechaNacimientoState.text,
                                     codigo.ifBlank { null }
                                 ) { exito, msg ->
                                     mensaje = msg
