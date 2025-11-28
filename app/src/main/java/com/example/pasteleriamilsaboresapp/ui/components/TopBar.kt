@@ -1,6 +1,5 @@
 package com.example.pasteleriamilsaboresapp.ui.components
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -10,7 +9,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
@@ -27,7 +26,8 @@ fun CommonTopBar(
     onMenuClick: () -> Unit = {},
     onCartClick: () -> Unit = {},
     onProfileClick: () -> Unit = {},
-    showBackButton: Boolean = false
+    showBackButton: Boolean = false,
+    cartCount: Int = 0            // 👈 NUEVO
 ) {
     // ✨ Gradiente pastel moderno
     val gradientBrush = Brush.horizontalGradient(
@@ -56,7 +56,7 @@ fun CommonTopBar(
                         .heightIn(min = 45.dp, max = 70.dp)
                         .widthIn(min = 110.dp, max = 170.dp)
                 )
-                    },
+            },
             navigationIcon = {
                 IconButton(onClick = onMenuClick) {
                     Icon(
@@ -65,14 +65,30 @@ fun CommonTopBar(
                         tint = CafeSuave
                     )
                 }
-                             },
+            },
             actions = {
+                // 🛒 Carrito con badge
                 IconButton(onClick = onCartClick) {
-                    Icon(
-                        imageVector = Icons.Default.ShoppingCart,
-                        contentDescription = "Carrito",
-                        tint = CafeSuave
-                    )
+                    BadgedBox(
+                        badge = {
+                            if (cartCount > 0) {
+                                Badge(
+                                    containerColor = RosaIntenso,
+                                    contentColor = Color.White
+                                ) {
+                                    Text(
+                                        text = if (cartCount > 9) "9+" else cartCount.toString()
+                                    )
+                                }
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ShoppingCart,
+                            contentDescription = "Carrito",
+                            tint = CafeSuave
+                        )
+                    }
                 }
 
                 IconButton(onClick = onProfileClick) {
@@ -82,7 +98,7 @@ fun CommonTopBar(
                         tint = CafeSuave
                     )
                 }
-                      },
+            },
 
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                 containerColor = Color.Transparent,
@@ -93,4 +109,3 @@ fun CommonTopBar(
         )
     }
 }
-

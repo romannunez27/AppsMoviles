@@ -5,35 +5,42 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.pasteleriamilsaboresapp.R
-import com.example.pasteleriamilsaboresapp.ui.theme.*
-import com.example.pasteleriamilsaboresapp.ui.view.DrawerMenu
-import kotlinx.coroutines.launch
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.ui.unit.sp
 import com.example.pasteleriamilsaboresapp.ui.components.CommonFooter
 import com.example.pasteleriamilsaboresapp.ui.components.CommonTopBar
+import com.example.pasteleriamilsaboresapp.ui.theme.*
+import com.example.pasteleriamilsaboresapp.ui.view.DrawerMenu
+import com.example.pasteleriamilsaboresapp.viewmodel.CartViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeUserScreen(navController: NavController) {
+fun HomeUserScreen(
+    navController: NavController,
+    cartViewModel: CartViewModel? = null      // 👈 ahora acepta cartViewModel opcional
+) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+
+    // 🛒 Cantidad de productos en el carrito (0 si no hay viewModel, ej. en Preview)
+    val itemsCarrito = cartViewModel?.items?.collectAsState()?.value ?: emptyList()
+    val cartCount = itemsCarrito.sumOf { it.cantidad }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -50,7 +57,8 @@ fun HomeUserScreen(navController: NavController) {
                 CommonTopBar(
                     onMenuClick = { scope.launch { drawerState.open() } },
                     onCartClick = { navController.navigate("carrito") },
-                    onProfileClick = { navController.navigate("perfil") }
+                    onProfileClick = { navController.navigate("perfil") },
+                    cartCount = cartCount                      // 👈 se muestra el badge aquí
                 )
             },
             containerColor = FondoCrema
@@ -186,8 +194,9 @@ fun HomeUserScreen(navController: NavController) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewHomeUserScreen() {
-    val navController = androidx.navigation.compose.rememberNavController()
-    com.example.pasteleriamilsaboresapp.ui.theme.PasteleriaMilSaboresTheme {
+    val navController = rememberNavController()
+    PasteleriaMilSaboresTheme {
+        // 👇 En preview no pasamos cartViewModel, usa el default = null
         HomeUserScreen(navController = navController)
     }
 }
