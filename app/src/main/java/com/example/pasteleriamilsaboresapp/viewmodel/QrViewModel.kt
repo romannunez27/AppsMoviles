@@ -6,8 +6,9 @@ import androidx.lifecycle.ViewModel
 import com.example.pasteleriamilsaboresapp.data.model.QrResult
 import com.example.pasteleriamilsaboresapp.data.repository.QrRepository
 
-class QrViewModel : ViewModel() {
-    private val repository = QrRepository()
+class QrViewModel(
+    private val repository: QrRepository = QrRepository()
+) : ViewModel() {
 
     private val _qrResult = MutableLiveData<QrResult?>()
     val qrResult: LiveData<QrResult?> = _qrResult

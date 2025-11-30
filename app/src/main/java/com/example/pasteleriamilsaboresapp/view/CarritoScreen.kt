@@ -14,11 +14,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.pasteleriamilsaboresapp.data.model.CartItem
 import com.example.pasteleriamilsaboresapp.ui.catalogo.productosCatalogo
 import com.example.pasteleriamilsaboresapp.ui.components.CommonTopBar
 import com.example.pasteleriamilsaboresapp.ui.components.MapaInteractivo
@@ -26,6 +28,9 @@ import com.example.pasteleriamilsaboresapp.ui.theme.FondoCrema
 import com.example.pasteleriamilsaboresapp.ui.theme.MarronOscuro
 import com.example.pasteleriamilsaboresapp.ui.theme.RosaPastel
 import com.example.pasteleriamilsaboresapp.viewmodel.CartViewModel
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,6 +46,12 @@ fun CarritoScreen(
     var direccion by remember { mutableStateOf(TextFieldValue("")) }
     var mensajeDedicatoriaGeneral by remember { mutableStateOf(false) }
     var mensajeExito by remember { mutableStateOf(false) }
+
+    // 🧾 Estado para la boleta
+    var boletaItems by remember { mutableStateOf<List<CartItem>>(emptyList()) }
+    var boletaDireccion by remember { mutableStateOf("") }
+    var boletaTotal by remember { mutableStateOf(0) }
+    var boletaFechaEntrega by remember { mutableStateOf("") }
 
     val cartCount = items.sumOf { it.cantidad }
 
@@ -101,7 +112,8 @@ fun CarritoScreen(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .testTag("cart_list"),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(items) { item ->
@@ -114,7 +126,9 @@ fun CarritoScreen(
                     val puedeIncrementar = cantidadTotalMismoCodigo < stockTotal
 
                     Card(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("cart_item_${item.id}"),
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.surface
                         ),
@@ -223,8 +237,9 @@ fun CarritoScreen(
                     value = direccion,
                     onValueChange = { direccion = it },
                     label = { Text("Dirección de entrega") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("cart_direccion_field"),
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -266,6 +281,17 @@ fun CarritoScreen(
                 Button(
                     onClick = {
                         if (direccion.text.isNotBlank() && items.isNotEmpty()) {
+                            // 🧾 Guardamos snapshot para la boleta
+                            boletaItems = items
+                            boletaDireccion = direccion.text
+                            boletaTotal = total
+
+                            // Fecha estimada de entrega = hoy + 5 días
+                            val cal = Calendar.getInstance()
+                            cal.add(Calendar.DAY_OF_YEAR, 5)
+                            val formato = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+                            boletaFechaEntrega = formato.format(cal.time)
+
                             cartViewModel.confirmarCompra(
                                 direccion = direccion.text,
                                 mensajeDedicatoria = mensajeDedicatoriaGeneral,
@@ -274,7 +300,9 @@ fun CarritoScreen(
                             mensajeExito = true
                         }
                     },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("cart_confirm_button"),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = RosaPastel,
                         contentColor = MarronOscuro
@@ -292,7 +320,7 @@ fun CarritoScreen(
             }
         }
 
-        // 🎉 Popup de compra exitosa con contraste
+        // 🎉 Popup de compra exitosa con BOLETA
         if (mensajeExito) {
             AlertDialog(
                 onDismissRequest = { /* obligamos a elegir opción */ },
@@ -300,16 +328,69 @@ fun CarritoScreen(
                 title = {
                     Text(
                         text = "Compra realizada",
+                        modifier = Modifier.testTag("cart_success_title"),
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                         color = MarronOscuro
                     )
                 },
                 text = {
-                    Text(
-                        text = "¡Felicidades! Tu pedido ha sido registrado con éxito.\n\nPronto recibirás tu pedido en la dirección indicada.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MarronOscuro
-                    )
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            text = "¡Felicidades! Tu pedido ha sido registrado con éxito.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MarronOscuro
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Detalle de la compra:",
+                            style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                            color = MarronOscuro
+                        )
+
+                        boletaItems.forEach { item ->
+                            Text(
+                                text = "- ${item.nombre} x${item.cantidad}  (Subtotal: $${item.subtotal})",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MarronOscuro
+                            )
+                            if (!item.dedicatoria.isNullOrBlank()) {
+                                Text(
+                                    text = "  Mensaje: \"${item.dedicatoria}\"",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MarronOscuro
+                                )
+                            }
+                            if (item.velasCantidad > 0) {
+                                Text(
+                                    text = "  Velas: ${item.velasCantidad} (${item.velasNumeros ?: "sin detalle de número"})",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MarronOscuro
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text(
+                            text = "Dirección de entrega: $boletaDireccion",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MarronOscuro
+                        )
+
+                        Text(
+                            text = "Total pagado: $$boletaTotal",
+                            style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+                            color = MarronOscuro
+                        )
+
+                        Text(
+                            text = "Fecha estimada de entrega: $boletaFechaEntrega",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MarronOscuro
+                        )
+                    }
                 },
                 confirmButton = {
                     Button(

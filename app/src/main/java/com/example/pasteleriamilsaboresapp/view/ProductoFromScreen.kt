@@ -22,6 +22,7 @@ import com.example.pasteleriamilsaboresapp.ui.catalogo.productosCatalogo
 import com.example.pasteleriamilsaboresapp.ui.components.CommonTopBar
 import com.example.pasteleriamilsaboresapp.ui.theme.*
 import com.example.pasteleriamilsaboresapp.viewmodel.CartViewModel
+import androidx.compose.ui.platform.testTag
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -144,7 +145,7 @@ fun ProductoFormScreen(
                     label = { Text("Cantidad de tortas") },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.fillMaxWidth(0.9f),
+                    modifier = Modifier.fillMaxWidth(0.9f).testTag("form_quantity"),
                     enabled = stockDisponible > 0
                 )
 
@@ -171,7 +172,8 @@ fun ProductoFormScreen(
                     Text("¿Agregar velas numéricas?")
                     Switch(
                         checked = usarVelas,
-                        onCheckedChange = { usarVelas = it }
+                        onCheckedChange = { usarVelas = it },
+                        modifier = Modifier.testTag("form_switch_velas")
                     )
                 }
 
@@ -266,7 +268,8 @@ fun ProductoFormScreen(
                         Text(
                             "Subtotal: $$subtotal",
                             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                            color = MarronOscuro
+                            color = MarronOscuro,
+                            modifier = Modifier.testTag("form_subtotal")
                         )
                         if (usarVelas && cantidadInt > 0) {
                             Text(
@@ -311,7 +314,7 @@ fun ProductoFormScreen(
                     colors = ButtonDefaults.buttonColors(
                         containerColor = RosaPastel,
                         contentColor = MarronOscuro
-                    )
+                    ), modifier = Modifier.testTag("form_add_to_cart")
                 ) {
                     Text("Agregar al carrito")
                 }

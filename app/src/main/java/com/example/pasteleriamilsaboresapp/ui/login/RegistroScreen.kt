@@ -27,6 +27,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.pasteleriamilsaboresapp.R
 import com.example.pasteleriamilsaboresapp.ui.theme.*
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.platform.testTag
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -91,7 +93,7 @@ fun RegistroScreen(
                     onValueChange = { nombre = it },
                     label = { Text("Nombre completo") },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth(0.95f)
+                    modifier = Modifier.fillMaxWidth(0.95f).testTag("registro_nombre")
                 )
 
                 OutlinedTextField(
@@ -99,7 +101,7 @@ fun RegistroScreen(
                     onValueChange = { correo = it },
                     label = { Text("Correo electrónico") },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth(0.95f)
+                    modifier = Modifier.fillMaxWidth(0.95f).testTag("registro_correo")
                 )
 
                 var fechaNacimientoState by remember { mutableStateOf(TextFieldValue("")) }
@@ -130,7 +132,7 @@ fun RegistroScreen(
                         unfocusedBorderColor = CafeSuave,
                         focusedLabelColor = RosaIntenso
                     ),
-                    modifier = Modifier.fillMaxWidth(0.95f)
+                    modifier = Modifier.fillMaxWidth(0.95f).testTag("registro_fecha")
                 )
 
                 OutlinedTextField(
@@ -138,7 +140,7 @@ fun RegistroScreen(
                     onValueChange = { codigo = it },
                     label = { Text("Código promocional (opcional)") },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth(0.95f)
+                    modifier = Modifier.fillMaxWidth(0.95f).testTag("registro_codigo")
                 )
 
                 // 🔸 Sección QR
@@ -183,7 +185,7 @@ fun RegistroScreen(
                             Text(if (showPass) "Ocultar" else "Ver", color = RosaIntenso)
                         }
                     },
-                    modifier = Modifier.fillMaxWidth(0.95f)
+                    modifier = Modifier.fillMaxWidth(0.95f).testTag("registro_password")
                 )
 
                 OutlinedTextField(
@@ -197,7 +199,7 @@ fun RegistroScreen(
                             Text(if (showConfirmPass) "Ocultar" else "Ver", color = RosaIntenso)
                         }
                     },
-                    modifier = Modifier.fillMaxWidth(0.95f)
+                    modifier = Modifier.fillMaxWidth(0.95f).testTag("registro_confirm_password")
                 )
 
                 // 🟢 Mensaje dinámico
@@ -205,7 +207,7 @@ fun RegistroScreen(
                     Text(
                         it,
                         color = if (it.contains("exitoso")) Color(0xFF4CAF50) else Color.Red,
-                        modifier = Modifier.padding(top = 6.dp)
+                        modifier = Modifier.padding(top = 6.dp).testTag("registro_mensaje")
                     )
                 }
 
@@ -240,7 +242,7 @@ fun RegistroScreen(
                         modifier = Modifier
                             .weight(1f)
                             .height(50.dp)
-                            .border(2.dp, CafeSuave, MaterialTheme.shapes.medium),
+                            .border(2.dp, CafeSuave, MaterialTheme.shapes.medium).testTag("registro_boton_registrar"),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = RosaPastel,
                             contentColor = CafeSuave

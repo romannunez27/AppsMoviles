@@ -22,6 +22,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.pasteleriamilsaboresapp.R
 import com.example.pasteleriamilsaboresapp.ui.theme.*
+import androidx.compose.ui.platform.testTag
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,7 +79,7 @@ fun LoginScreen(
                         unfocusedBorderColor = CafeSuave,
                         focusedLabelColor = RosaIntenso
                     ),
-                    modifier = Modifier.fillMaxWidth(0.9f)
+                    modifier = Modifier.fillMaxWidth(0.9f).testTag("login_email")
                 )
 
                 // 🔒 Contraseña
@@ -97,7 +99,7 @@ fun LoginScreen(
                         unfocusedBorderColor = CafeSuave,
                         focusedLabelColor = RosaIntenso
                     ),
-                    modifier = Modifier.fillMaxWidth(0.9f)
+                    modifier = Modifier.fillMaxWidth(0.9f).testTag("login_password")
                 )
 
                 // ⚠️ Mensaje de error
@@ -131,7 +133,8 @@ fun LoginScreen(
                         modifier = Modifier
                             .weight(1f)
                             .height(50.dp)
-                            .border(2.dp, CafeSuave, MaterialTheme.shapes.medium),
+                            .border(2.dp, CafeSuave, MaterialTheme.shapes.medium)
+                            .testTag("login_button"),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = RosaPastel,
                             contentColor = CafeSuave
@@ -149,7 +152,8 @@ fun LoginScreen(
                         modifier = Modifier
                             .weight(1f)
                             .height(50.dp)
-                            .background(RosaPastel.copy(alpha = 0.25f), shape = MaterialTheme.shapes.medium),
+                            .background(RosaPastel.copy(alpha = 0.25f), shape = MaterialTheme.shapes.medium)
+                            .testTag("register_button"),
                         border = BorderStroke(2.dp, CafeSuave),
                         colors = ButtonDefaults.outlinedButtonColors(
                             containerColor = RosaPastel.copy(alpha = 0.2f),
