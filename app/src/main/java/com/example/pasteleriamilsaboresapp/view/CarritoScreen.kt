@@ -256,20 +256,6 @@ fun CarritoScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("¿Agregar dedicatoria general?")
-                    Switch(
-                        checked = mensajeDedicatoriaGeneral,
-                        onCheckedChange = { mensajeDedicatoriaGeneral = it }
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
                 Text(
                     text = "Total: $$total",
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
